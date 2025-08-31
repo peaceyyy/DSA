@@ -26,14 +26,14 @@ void insertSorted(charList *L, char elem)
 
         charList *trav = L;
 
-        for (; (*trav) != NULL && elem > (*trav)->elem; trav = &(*trav)->link)
+        for (; *trav != NULL && elem > (*trav)->elem; trav = &(*trav)->link)
         {
         }
 
         if (trav != NULL)
         {
 
-            newNode->link = (*trav);
+            newNode->link = *trav;
             (*trav)= newNode;
         }
     }
@@ -58,6 +58,7 @@ int main()
     insertSorted(&L, 'a');
     insertSorted(&L, 'a');
     insertSorted(&L, 'c');
+    insertSorted(&L, 'd');
     insertSorted(&L, 'b');
 
 
