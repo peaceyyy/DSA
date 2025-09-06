@@ -9,14 +9,6 @@ typedef struct Node{
 
 } *node_t;
 
-typedef struct {
-
-    node_t head; 
-    int top;
-    int size; 
-
-} Stack;
-
 
 node_t createNode (int x){
 
@@ -30,46 +22,28 @@ node_t createNode (int x){
     } 
 }
 
-void initStack(Stack** S,int size){
-    
-    S = malloc(sizeof(Stack));
-    (*S)->head = NULL;
-    (*S)->size = size;
-    (*S)->top = -1;
-
+void init (node_t* S){
+    *S = NULL;
 }
 
-void push(Stack** S, int x){
-    if (isFull(**S)){
-    
-        printf("Stack is full!");
+void push(node_t* S, int x){
 
+    node_t newNode = createNode(x);
 
+    if ((*S) == NULL){
+        (*S) = newNode; 
     } else {
-
-    node_t newNode = createNode(1);
-
-    if ((*S)->head == NULL){
-        (*S)->head = newNode; 
-    } else {
-        (*S)->head->link = newNode;
+        newNode ->link = *S;
+        (*S) = newNode; 
     }   
-
-    (*S)->top++;
-
-    }
+    
 }
 
-bool isFull (Stack S){
-    return S.top == S.size;
+bool isEmpty (node_t S){
+    return S == NULL;
 }
 
-
-bool isEmpty (Stack S){
-    return S.top == -1;
-}
-
-int pop(Stack* S){
+int pop(node_t* S){
 
     if (isEmpty(*S)){
 
@@ -77,14 +51,33 @@ int pop(Stack* S){
 
     } else {
 
-        return S->to
+        node_t temp = (*S);
+        int data = (*S)->data;
+        *(S) = (*S)->link;
+        free(temp);
+        return data;       
     }
 
 
 }
 
-int peek (Stack S){
+int peek (node_t S){
 
+ if (isEmpty(S)){
+
+        printf("node_t is empty");
+
+    } else {
+        return (S)->data;       
+    }
+
+}
+
+void displayStack (node_t S){
+
+    node_t trav = S; 
+
+    for (; trav != NULL; trav = trav->link) printf("%d \n" , trav->data);
 
 }
 
@@ -92,7 +85,16 @@ int peek (Stack S){
 
 int main(){
 
-    L 
+    node_t StackHead;
+    init(&StackHead);
+
+    push(&StackHead, 1);
+    push(&StackHead, 2);
+    push(&StackHead, 3);
+    push(&StackHead, 3);
+    displayStack (StackHead);
+
+    printf("Popped: %d", pop(&StackHead));
 
 }
 
