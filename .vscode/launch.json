@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": true,
-      "cwd": "c:/Users/Peace/Documents/BSCS 2 1st Sem/DSA",
-      "program": "c:/Users/Peace/Documents/BSCS 2 1st Sem/DSA/build/Debug/outDebug",
+      "cwd": "c:/Users/Peace/Documents/BSCS 2 1st Sem/DSA/Queues",
+      "program": "c:/Users/Peace/Documents/BSCS 2 1st Sem/DSA/Queues/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [
