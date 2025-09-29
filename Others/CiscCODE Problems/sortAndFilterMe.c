@@ -1,3 +1,38 @@
+/*
+
+
+
+Sort and Filter me!!!
+By Zeus Elderfield
+
+DSA
+You are tasked with completing a circular queue program that stores people’s names (first name and last name). The queue has limited capacity and supports basic operations like enqueue, dequeue, and display.
+
+Your mission is to implement the following two functions:
+
+1. filterNames(NQueue *nq, char *filterString)
+- Removes all names from the queue that match the given last name (filterString).
+- Returns the removed names in an array, ending with a sentinel element (both fname and lname as empty strings " ").
+- If no names match, return only the sentinel.
+
+
+2. insertSorted(NQueue *nq, Name n)
+- Inserts a new name into the queue in sorted order by last name.
+- Must directly manipulate the queue’s array structure (i.e., do not use enqueue, dequeue, or front).
+- Should return false if the queue is already full.
+
+
+When completed, the program should allow users to:
+1. Enter names which are automatically sorted into the queue.
+2. Display the queue.
+3. Enter a last name to filter out matching entries, which are then listed separately.
+
+
+Started September 18, 2025
+Finished September 19, 2025 (1:10 AM)
+
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
@@ -57,66 +92,96 @@ int main()
         if (!insertSorted(&Q, temp))
         {
             printf("Queue is FULL!\n\n");
-        }+
+        }
     }
 
     printf("QUEUE:\n");
     displayQueue(Q);
 
-    
-    
-    
 
-    
+        char remove[100];
+    printf("\nEnter last name to filter from queue: ");
+    scanf(" %[^\n]", remove);
 
-    
-    
+    Name *f = filterNames(&Q, remove);
 
-    
-    
-    
-    
-    
+    printf("\nQUEUE:\n");
+    displayQueue(Q);
+
+    printf("\nFILTERED NAMES:\n");
+    for(int i = 0; strcmp(f[i].lname, "END") != 0; i++) {
+        printf("%s %s\n", f[i].fname, f[i].lname);
+    }
 
     return 0;
+
 }
 
-
+/*Removes the names that matches the filterString to the lastname.
+  Returns the removed names. Use the concept of adding a sentinel
+  at the end indicating the last item in list as empty strings for
+  fname and lname. If there are no names that will match then the
+  function should return the sentinel.*/
 Name *filterNames(NQueue *nq, char *filterString)
 {
-    Name *filteredNames[MAX];
+
+    Name sentinelName = {"END", "END"};
+    Name* filteredNameArray = malloc(sizeof(Name) * MAX);
+  
+    
+
+    int x = nq->front;
+    int filteredNameCount = 0;
+    while (x != (nq->rear + 1) % MAX)
+    {
+
+        if (strcmp(nq->elems[x].lname, filterString) == 0)
+        {
+            filteredNameArray [filteredNameCount++] = nq->elems[x];
+
+            for (int y = x; y != (nq->rear + 1) % MAX; y = (y + 1) % MAX)
+            {
+                nq->elems[(y)] = nq->elems[(y + 1) % MAX];
+            }
+
+            nq->rear = (nq->rear - 1 + MAX) % MAX;
+
+            
+        }
+
+        else
+        {
+            x = (x + 1) % MAX;
+        }
+    }
+
+     filteredNameArray[filteredNameCount] = sentinelName;
+
+
+    return filteredNameArray;
 }
 
+bool insertSorted(NQueue *nq, Name n)
+{
+    if (isFull(*nq))
+        return false;
 
-bool insertSorted(NQueue *nq, Name n) {
-    if (isFull(*nq)) return false;
+    int x;
 
-    
-    int count = (nq->rear - nq->front + MAX) % MAX;  
-    int pos = 0;
-
-    
-    while (pos < count &&
-           strcmp(n.lname, nq->elems[(nq->front + 1 + pos) % MAX].lname) > 0) {
-        pos++;
+    for (x = nq->front; x != (nq->rear + 1) % MAX && strcmp(n.lname, nq->elems[x].lname) > 0; x = (x + 1) % MAX)
+    {
     }
 
-    
-    for (int i = count; i > pos; i--) {
-        nq->elems[(nq->front + 1 + i) % MAX] =
-            nq->elems[(nq->front + i) % MAX];
+    for (int y = (nq->rear + 1) % MAX; y != x; y = (y - 1 + MAX) % MAX)
+    {
+        nq->elems[(y)] = nq->elems[y - 1];
     }
 
-    
-    nq->elems[(nq->front + 1 + pos) % MAX] = n;
-
-    
+    nq->elems[x] = n;
     nq->rear = (nq->rear + 1) % MAX;
 
     return true;
 }
-
-
 
 void initNQueue(NQueue *nq)
 {
@@ -144,7 +209,7 @@ void displayQueue(NQueue nq)
         printf("%s %s\n", data.fname, data.lname);
 
         dequeue(&nq);
-                enqueue(&nq, data);
+        enqueue(&nq, data);
     }
 }
 
