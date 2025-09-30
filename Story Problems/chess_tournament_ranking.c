@@ -163,6 +163,7 @@ void updatePlayerWins(Tournament *t, char name[], int newWins)
 
 
     */
+
     int currPos = -1;
     int newPos = -1;
 
@@ -176,7 +177,7 @@ void updatePlayerWins(Tournament *t, char name[], int newWins)
         if (newWins > t->players[i].wins) // if it gets compared with a win thats lower then it should go b4 i - 1 or just i??
         {
             newPos = i - 1;
-        }
+        } 
         else if (newWins == -1)
         {
             newPos = 0;
@@ -189,15 +190,17 @@ void updatePlayerWins(Tournament *t, char name[], int newWins)
         }
 
         if (strcmp(name, t->players[i].name) == 0) // find curent position
-        {
+        {   
+            if (newWins == t->players[i].wins) return; // same win count — no updates
             currPos = i;
         }
+
     }
     // if that new index is not the same as current index
 
     if (newPos != currPos)
     {
-
+        printf("\nNew Position:  %d, Prev Pos. %d\n", newPos, currPos);
         // store player in a temp for reinsertion
         Player temp = t->players[currPos];
         temp.wins = newWins;
@@ -306,7 +309,7 @@ int main()
     */
 
     // Test Case 5: Update with no position change
-    printf("Test 5 - Update with no rank change:\n");
+    printf("\n\nTest 5 - Update with no rank change:\n");
     updatePlayerWins(&tournament, "Ding", 4); // Same wins
     displayRankings(tournament);
     /* Expected rankings after Test 5 (no change from Test 4):

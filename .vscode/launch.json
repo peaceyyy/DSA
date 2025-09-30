@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": true,
-      "cwd": "c:/Users/Peace/Documents/BSCS 2 1st Sem/DSA/DSA Implementation/Computer Word",
-      "program": "c:/Users/Peace/Documents/BSCS 2 1st Sem/DSA/DSA Implementation/Computer Word/build/Debug/outDebug",
+      "cwd": "c:/Users/Peace/Documents/BSCS 2 1st Sem/DSA/DSA Implementation/Sets/Bit Vector",
+      "program": "c:/Users/Peace/Documents/BSCS 2 1st Sem/DSA/DSA Implementation/Sets/Bit Vector/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [
