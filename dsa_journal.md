@@ -1,98 +1,104 @@
 # DSA Learning Journal
 
----
-
-## 2025-10-01 16:30 | Gaming Café Membership System - Set Operations Practice
-
-### Problem Kernel
-
-Given three membership sets (Regular, Premium, VIP) with 10 gaming stations, implement set operations to answer Maya's operational queries about station occupancy patterns.
-
-### 15-Minute Sprint Analysis & Review
-
-#### ✅ **What You Did Well:**
-
-**Problem Decomposition (Excellent):**
-
-- Correctly identified this as a **bit vector/set operations** problem
-- Recognized the need for intersection (`&&`), union (`||`), and complement (`!`) operations
-- Successfully mapped story requirements to DSA operations:
-  - "Both Regular AND Premium" → intersection
-  - "Regular but NOT VIP" → set difference
-  - "Any member type" → union of three sets
-
-**Code Organization:**
-
-- Functions follow single responsibility principle
-- Clear variable naming (`busyStations`, `forUpgrades`, `allStations`)
-- Proper function signatures matching the problem requirements
-
-#### 🔍 **Areas for Improvement:**
-
-**Critical Logic Issues (2 functions need attention):**
-
-1. **`getPromotionStations()`** - Initialization bug:
-
-   ```c
-   // Current: Uninitialized memory access
-   (*noPremium)[i] = !(noPremium[i]); // Reading uninitialized data!
-
-   // Should be: Direct complement
-   (*noPremium)[i] = !(premium[i]);
-   ```
-2. **`checkServiceConsistency()`** - Inverted logic:
-
-   ```c
-   // Current: Returns TRUE when inconsistent (backwards!)
-   if (premium[i] == 0) isConsistentService = TRUE;
-
-   // Logic: Should return FALSE when VIP exists but no Premium
-   ```
-
-**Attention to Detail:**
-
-- **Initial misunderstanding**: Thought "each SET was the station" vs "each INDEX was the station"
-- **Reading comprehension**: Story problems require careful parsing of constraints vs narrative
-
-#### 📈 **Pattern Recognition Success:**
-
-- Identified **subset checking** pattern in consistency function
-- Recognized **set complement** in promotion stations
-- Correctly applied **intersection** and **set difference** operations
-- Strong intuition for translating English queries into logical expressions
-
-#### 🎯 **Key Learning:**
-
-**Story → DSA Translation Skills**: Your 15-minute sprint showed excellent pattern recognition but highlighted the need for **more careful constraint parsing**. The confusion about "stations as indices vs sets" is a common translation pitfall.
-
-### Pseudocode Patterns Mastered:
-
-```
-// Intersection: A AND B
-for i in range: result[i] = setA[i] && setB[i]
-
-// Set Difference: A - B (A but not B)  
-for i in range: result[i] = setA[i] && !setB[i]
-
-// Union: A OR B OR C
-for i in range: result[i] = setA[i] || setB[i] || setC[i]
-
-// Subset Check: A ⊆ B (all A elements also in B)
-for i in range: if A[i] && !B[i] return FALSE
-return TRUE
-```
-
-### Complexity Analysis:
-
-- **Time**: O(n) for all operations where n = MAX_STATIONS (10)
-- **Space**: O(n) for result allocation in set operations
-
-### Archetype Tags:
-
-[BitVector] [SetOperations] [StoryProblem] [ArrayIteration] [LogicalOperators]
-
-### Reflection Question:
-
-How might you develop a systematic approach to distinguish between **narrative elements** and **actual constraints** when parsing story problems under time pressure?
+*Tracking progress in Data Structures & Algorithms*
 
 ---
+
+=== Closed Hashing Variation 3: Synonym Chaining ===
+Date: 2025-10-02 14:30
+
+**Core Concept:** Fixed array split into prime area (direct hash) + synonym area (collision overflow)
+**Architecture:** Prime slots act as chain heads, synonyms linked via cursor-based allocation
+**Collision Strategy:** Insert-first chaining - new collisions become immediate successors
+**Memory Model:** Two-zone design with free list management via `avail` pointer
+
+**Key Optimizations Added:**
+
+- Bounds checking: `D->avail != -1` (synonym space available)
+- Duplicate prevention: `D->Nodes[hashval].data != x`
+- Convention compliance: Avoiding early returns/breaks per university standards
+
+**Complexity:**
+
+- Insert: O(1) best, O(1) average (assuming low collision rate)
+- Search: O(1) best, O(chain_length) worst
+- Space: O(n) fixed allocation
+
+**Pattern:** [Closed-Hashing] [Synonym-Chaining] [Cursor-Based]
+
+**Link Initialization Strategy:** Prime area links set to -1 only when occupied, not during init
+**Next:** Debug isMember logic for no-return constraint compliance
+
+=== Closed Hashing: Link Field Management ===
+Date: 2025-10-02 14:45
+
+**Question:** Why set `link = -1` during insert, not initialization?
+
+**Answer:** **Semantic vs. Structural separation**
+
+**During initialize():**
+
+- Prime area: Only `data = EMPTY`, links undefined/garbage
+- Synonym area: Links form free list chain (10→11→12→...→19→-1)
+
+**During insert():**
+
+- Prime slot gets `link = -1` to mark "end of chain"
+- This happens **only when slot becomes occupied**
+
+**Why this matters:**
+
+- Empty slots don't need valid links (they're not part of any chain)
+- Only occupied prime slots need `link = -1` to terminate their synonym chains
+- Synonym area links are pre-chained for allocation purposes
+
+**Memory efficiency:** Don't initialize what you don't need until you need it
+
+---
+
+## SESSION BREAK: CISCODE x
+
+---
+
+=== Two-Sum CISCode Problem: The Edge Case Detective Story ===
+Date: 2025-10-02 15:15
+
+**The Mystery:** Given an array and target sum, find two indices whose elements add up to the target using open hashing with collision chaining.
+
+**Initial Confusion:** Started questioning why we needed open hashing at all when Python dictionaries make this trivial. The lightbulb moment came when realizing that C's fixed hash table size (MAX=31) with arbitrary input numbers creates inevitable collisions that need proper handling.
+
+**The Journey of Bugs:**
+
+1. **Field Identity Crisis** - Got completely tangled up between `key` (the actual array value), `val` (the array index), and the hash slot number. Kept mixing them up in comparisons.
+2. **The Null Pointer Trap** - Forgot the golden rule of C: always check if a pointer is NULL before dereferencing. Was trying to access `twoSumHashMap[hash]->key` when the slot might be empty.
+3. **The Wrong Comparison Saga** - Spent way too long comparing the hash value to the stored key instead of comparing the complement value to the stored key. Classic case of overthinking the problem.
+
+**The Edge Case That Almost Got Away:	**
+Negative numbers! The hash function converts negatives to positives, meaning -5 and +5 both hash to slot 5. This creates intentional collisions that the chaining logic had to handle correctly. Tested with arrays like `[-1, -2, -3]` to make sure the traversal logic works.
+
+**Final Algorithm That Works:**
+
+```
+For each number in the array:
+  Calculate what its complement should be (target - current_number)
+  Hash the complement to find which slot to check
+  
+  If that slot has entries:
+    Walk through the collision chain looking for exact complement match
+    If found: return the stored index and current index
+  
+  If not found:
+    Insert current number with its index into the hash table
+```
+
+**What I Learned for Exams:**
+
+- Edge cases aren't random - they follow patterns (boundaries, duplicates, negatives, overflows)
+- Always trace through collision scenarios manually, don't just assume they work
+- In hash problems, be crystal clear about what you're storing vs what you're searching for
+- The "check first, then insert" pattern is powerful for complement-finding problems
+
+**Complexity:** Time O(n) average case, O(n²) worst case | Space O(n)
+**Pattern Tags:** [Open-Hashing] [Complement-Search] [Collision-Chaining]
+
+**Reflection:** The debugging process taught me more about systematic edge case hunting than just getting the right answer. Next time I'll categorize potential edge cases upfront instead of discovering them through failed test cases.
