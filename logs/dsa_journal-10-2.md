@@ -1,8 +1,12 @@
-# DSA Learning Journal
+# DSA Learning Journal (Variation 3 Dictionary)
 
 *Tracking progress in Data Structures & Algorithms*
 
+
+
 ---
+
+**Tags:** [OpenHashing] [ComplementSearch] [CollisionChaining] [TwoSum] [CISCode] [EdgeCases] [NegativeNumbers] [HashCollisions] [NullPointerCheck] 
 
 === Closed Hashing Variation 3: Synonym Chaining ===
 Date: 2025-10-02 14:30
@@ -24,7 +28,7 @@ Date: 2025-10-02 14:30
 - Search: O(1) best, O(chain_length) worst
 - Space: O(n) fixed allocation
 
-**Pattern:** [Closed-Hashing] [Synonym-Chaining] [Cursor-Based]
+**Pattern:** [ClosedHashing] [SynonymChaining] [CursorBased] [DictionaryV3] [LinkManagement] [AvailPointer] [InsertFirst] [CollisionResolution]
 
 **Link Initialization Strategy:** Prime area links set to -1 only when occupied, not during init
 **Next:** Debug isMember logic for no-return constraint compliance
@@ -56,7 +60,7 @@ Date: 2025-10-02 14:45
 
 ---
 
-## SESSION BREAK: CISCODE x
+## SESSION BREAK: CISCODE
 
 ---
 
@@ -99,6 +103,6 @@ For each number in the array:
 - The "check first, then insert" pattern is powerful for complement-finding problems
 
 **Complexity:** Time O(n) average case, O(n²) worst case | Space O(n)
-**Pattern Tags:** [Open-Hashing] [Complement-Search] [Collision-Chaining]
+
 
 **Reflection:** The debugging process taught me more about systematic edge case hunting than just getting the right answer. Next time I'll categorize potential edge cases upfront instead of discovering them through failed test cases.

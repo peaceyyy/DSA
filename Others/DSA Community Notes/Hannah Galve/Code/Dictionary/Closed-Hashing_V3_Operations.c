@@ -14,32 +14,34 @@ https://pythontutor.com/visualize.html#code=//%20dictionary%20-%20closed%20hashi
 
 #define MAX 20
 #define EMPTY 0
-#define DELETED -1 
+#define DELETED -1
 
-typedef struct node {
+typedef struct node
+{
 	char data;
 	int link;
-}nodetype;
+} nodetype;
 
-typedef struct {
+typedef struct
+{
 	nodetype Nodes[MAX];
 	int avail;
-}Dictionary;
+} Dictionary;
 
-//function prototypes
+// function prototypes
 void initialize(Dictionary *D);
 int hash(char x);
 int isMember(Dictionary D, char x);
 void insert(Dictionary *D, char x);
-void deleteElem (Dictionary *D, char x);
-void displayDict (Dictionary D);
-void main () {
-	
+void deleteElem(Dictionary *D, char x);
+void displayDict(Dictionary D);
+void main()
+{
+
 	int retval;
 	Dictionary D;
-	initialize (&D);
-	
-	
+	initialize(&D);
+
 	insert(&D, 'a'); // ASCII 97 -> hash(97) = 7. No collision.
 	insert(&D, 'b'); // ASCII 98 -> hash(98) = 8. No collision.
 	insert(&D, 'c'); // ASCII 99 -> hash(99) = 9. No collision.
@@ -52,148 +54,178 @@ void main () {
 	insert(&D, 'v'); // ASCII 118 -> hash(118) = 8. COLLISION with 'b' and 'l'.
 	insert(&D, 'w'); // ASCII 119 -> hash(119) = 9. COLLISION with 'c' and 'm'.
 	
-
 	displayDict(D);
 	
-	// retval = isMember(D, 'a');
-	// printf("%d", retval);
+	isMember(D, 'a') ? printf("\na is a member\n") : printf("\na is not a member\n");
+	deleteElem(&D, 'a'); // ASCII 97 -> hash(97) = 7. No collision.
+	isMember(D, 'a') ? printf("a is a member") : printf("a is not a member\n");
+	
+	isMember(D, 'w') ? printf("w is a member") : printf("w is not a member\n");
+
+	deleteElem(&D, 'w'); // ASCII 97 -> hash(97) = 7. No collision.
+	isMember(D, 'w') ? printf("w is a member") : printf("w is not a member\n");
+
 	// retval = isMember(D, 'l');
 	// printf("%d", retval);
 	// retval = isMember(D, 'w');
 	// printf("%d", retval);
-	
+
 	// retval = isMember(D, 'd');
 	// printf("\n%d", retval);
 	// retval = isMember(D, 'h');
 	// printf("%d", retval);
 	// retval = isMember(D, 'e');
 	// printf("%d", retval);
-	
-	
+
 	// deleteElem(&D, 'a');
 	// deleteElem(&D, 'l');
 	// deleteElem(&D, 'w');
-	
 }
 
-
-void displayDict(Dictionary D){
-    int index;
-    //prime data area
-    for(index = 0; index < D.avail; index++){
-        printf("[%d] ", index);
-        if(D.Nodes[index].data == EMPTY){
-            printf("EMPTY | __");
-        } else if(D.Nodes[index].data == DELETED){
-            printf("DELETED | %d", DELETED);
-        } else{
-            printf("%d | %d", D.Nodes[index].data, D.Nodes[index].link);
-        }
-        printf("\n");
-    }
-    //synonym area;
-    printf("\nSynonym Area:\n");
-    for(index = D.avail; index < MAX; index++){
-        printf("[%d] %d | %d\n", index, D.Nodes[index].data, D.Nodes[index].link);
-    }
-    printf("\nCurrent Avail: %d", D.avail);
+void displayDict(Dictionary D)
+{
+	int index;
+	// prime data area
+	for (index = 0; index < D.avail; index++)
+	{
+		printf("[%d] ", index);
+		if (D.Nodes[index].data == EMPTY)
+		{
+			printf("EMPTY | __");
+		}
+		else if (D.Nodes[index].data == DELETED)
+		{
+			printf("DELETED | %d", DELETED);
+		}
+		else
+		{
+			printf("%d | %d", D.Nodes[index].data, D.Nodes[index].link);
+		}
+		printf("\n");
+	}
+	// synonym area;
+	printf("\nSynonym Area:\n");
+	for (index = D.avail; index < MAX; index++)
+	{
+		printf("[%d] %d | %d\n", index, D.Nodes[index].data, D.Nodes[index].link);
+	}
+	printf("\nCurrent Avail: %d", D.avail);
 }
 
-void initialize(Dictionary *D) {
+void initialize(Dictionary *D)
+{
 	D->avail = MAX / 2;
 	int index;
-	
-	//initialize prime data area to EMPTY
-	for (index = 0; index < D->avail; index++) {
+
+	// initialize prime data area to EMPTY
+	for (index = 0; index < D->avail; index++)
+	{
 		D->Nodes[index].data = EMPTY;
 	}
-	
-	//link all nodes in synonym area
-	for (index = D->avail; index < MAX; index++) {
+
+	// link all nodes in synonym area
+	for (index = D->avail; index < MAX; index++)
+	{
 		D->Nodes[index].link = index + 1;
 	}
-	
-	D->Nodes[MAX-1].link = -1;
+
+	D->Nodes[MAX - 1].link = -1;
 }
 
-int hash(char x) {
+int hash(char x)
+{
 	return (x % 10);
 }
 
-
-int isMember (Dictionary D, char x) {
+int isMember(Dictionary D, char x)
+{
 	int hashval = hash(x);
-	int trav;
-	
+	int trav  = -1;
+
 	// Traverse the chain starting from the home position's link.
 	// The element could be in the home position itself or in the synonym chain.
-	for (trav = hashval; trav != -1 && D.Nodes[trav].data != x; trav = D.Nodes[trav].link) {
-		// This loop handles both the check at the home position (first iteration if it's occupied)
-		// and the subsequent synonym chain traversal.
-		// Note: We must also check that the data is not DELETED.
-	}
-	
+
+	if (D.Nodes[hashval].data != EMPTY)
+	{
+
+		for (trav = hashval; trav != -1 && D.Nodes[trav].data != x; trav = D.Nodes[trav].link)
+		{
+			// This loop handles both the check at the home position (first iteration if it's occupied)
+			// and the subsequent synonym chain traversal.
+			// Note: We must also check that the data is not DELETED.
+		}
+	} 
 	// The loop terminates if trav == -1 (end of chain) or if data is found.
 	// We also need to ensure the found node isn't a deleted one.
-	return (trav != -1 && D.Nodes[trav].data != DELETED) ? 1 : 0; // Return 1 for TRUE, 0 for FALSE
+		return (trav != -1) ? 1 : 0;
 }
 
-
-
-void insert(Dictionary *D, char x) {
+void insert(Dictionary *D, char x)
+{
 	int hashval = hash(x);
 	int temp;
-	
-	if (D->Nodes[hashval].data == EMPTY) {
+
+	if (D->Nodes[hashval].data == EMPTY)
+	{
 		D->Nodes[hashval].data = x;
 		D->Nodes[hashval].link = -1;
+	}
+	else if (D->avail != -1 && D->Nodes[hashval].data != x)
+	{
+		// insertFirst()
+		temp = D->Nodes[D->avail].link;
 
-					
-	} else if (D->avail != -1 && D->Nodes[hashval].data != x) {
-		//insertFirst()
-		 	temp = D->Nodes[D->avail].link;
-		 	
-			D->Nodes[D->avail].data = x;
+		D->Nodes[D->avail].data = x;
 
-			// this in syn. area	this is in main data area
-			D->Nodes[D->avail].link = D->Nodes[hashval].link; // insert first (ish)
-			D->Nodes[hashval].link = D->avail; // set new head (not literally)
-			D->avail = temp; // move avail
-		}
+		// this in syn. area	this is in main data area
+		D->Nodes[D->avail].link = D->Nodes[hashval].link; // insert first (ish)
+		D->Nodes[hashval].link = D->avail;				  // set new head (not literally)
+		D->avail = temp;								  // move avail
+	}
 }
 
-void deleteElem (Dictionary *D, char x) {
+void deleteElem(Dictionary *D, char x)
+{
 	int hashval = hash(x);
 	int *trav, temp;
-	
-	if (D->Nodes[hashval].data != EMPTY) {
+
+	if (D->Nodes[hashval].data != EMPTY)
+	{
 		// Case 1: Element is in the home position.
-		if (D->Nodes[hashval].data == x) {
+		if (D->Nodes[hashval].data == x)
+		{
 			temp = D->Nodes[hashval].link; // Get the start of the synonym chain
-			if (temp != -1) {
+			if (temp != -1)
+			{
 				// If a synonym exists, move it up to the prime area to keep the chain intact.
 				D->Nodes[hashval] = D->Nodes[temp];
 				// Deallocate the now-empty synonym node
 				D->Nodes[temp].link = D->avail;
 				D->avail = temp;
-			} else {
+			}
+			else
+			{
 				// No synonyms, just mark as deleted.
 				D->Nodes[hashval].data = DELETED;
 			}
-		} else {
+		}
+		else
+		{
 			// Case 2: Element is in the synonym chain.
 			// Use a pointer-to-pointer to find the node and modify the previous node's link.
-			for (trav = &D->Nodes[hashval].link; *trav != -1 && D->Nodes[*trav].data != x; trav = &D->Nodes[*trav].link) {}
-			
-			if (*trav != -1) { // Element found in the synonym chain
-				temp = *trav; // The index of the node to delete
-				*trav = D->Nodes[temp].link; // Unlink it from the chain
-				
+			for (trav = &D->Nodes[hashval].link; *trav != -1 && D->Nodes[*trav].data != x; trav = &D->Nodes[*trav].link)
+			{
+			}
+
+			if (*trav != -1)
+			{								 // Element found in the synonym chain
+				temp = *trav;				 // The index of the node to delete
+				*trav = D->Nodes[temp].link; // Unlink it from the chain by bypassing it.
+
 				// Deallocate the node by adding it to the front of the avail list.
 				D->Nodes[temp].link = D->avail;
 				D->avail = temp;
 			}
 		}
-			
 	}
 }

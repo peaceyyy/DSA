@@ -78,7 +78,7 @@ void initDict(Dictionary *D){
 void displayDict(Dictionary D){
     int index;
     //prime data area
-    for(index = 0; index < D.Avail; index++){
+    for(index = 0; index < D.Avail; ind ex++){
         printf("[%d] ", index);
         if(D.Nodes[index].data == EMPTY){
             printf("EMPTY | __");
