@@ -83,7 +83,7 @@ void MINHEAPIFY(HEAP *H){
             //find smallest child
             childNdx = ((H->Elem[Lparent*2+1]) < (H->Elem[Lparent*2+2]))? Lparent *2 + 1 : Lparent *2 + 2;
                 //check if POT property is satisfied
-                if(H->Elem[Lparent] > H->Elem[childNdx] && H->Elem[childNdx] != -1){
+                if(H->Elem[Lparent] > H->Elem[childNdx] && H->Elem[childNdx] != -1){    
                     //swpa
                     temp = H->Elem[Lparent];
                     H->Elem[Lparent] = H->Elem[childNdx];

@@ -1,3 +1,18 @@
+# IDE and environment specific
 .github/
-.logs/
 .vscode/
+.gitignore
+
+# Log files
+.logs/
+
+# Notes and other non-project files
+.DSA Community Notes/
+
+# Compiled output
+*.exe
+*.o
+build/
+
+# Documents and generated reports
+*.pdf

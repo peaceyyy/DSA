@@ -66,8 +66,7 @@ void sortSet (SET A)
 
     for (SET i = A; (i) != NULL; (i) = (i) ->next){
 
-        int swapped = 0;
-        for (SET j = A; (j)->next != NULL; j = (j)-> next)
+            for (SET j = A; j->next != NULL ; j = (j)-> next)
         {
             if ((j) -> elem > (j)->next->elem)
             {
@@ -76,6 +75,7 @@ void sortSet (SET A)
                 (j)->next->elem = temp;
             }
         }
+
     } 
 }
 

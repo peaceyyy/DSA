@@ -1,4 +1,4 @@
-/* HeapSort in Descending order*/
+    /* HeapSort in Descending order*/
 #include<stdio.h>
 
 #define SIZE 15
@@ -43,7 +43,7 @@ void display(HEAP H){
     printf("\nCurrent LastNdx = %d\n", H.lastNdx);
 }
 void popuUnsort(HEAP *H, int arr[], int size){
-    int index, childNdx;
+    int     index, childNdx;
     for(index = 0; index < size; index++){
         if(H->lastNdx != SIZE-1){
             H->Elem[childNdx = ++H->lastNdx] = arr[index];
@@ -105,38 +105,43 @@ int deleteMin(HEAP *H){
     return min;
 }
 //brute forced this shit
-void MinHeapify(HEAP *H){
-                                          
-    int leftNdx, rightNdx, smallest, temp, index = 0;
-
-          //check if the index is set to the lowest level parent
-    while(index <= H->lastNdx / 2){
-        //calculate the left and right children of the index
-        leftNdx = 2 * index + 1;
-        rightNdx = 2 * index + 2;
-        //smallest holds index which is the currentt node in the heap/list
-        smallest = index;
-
-        //we check if a left child exists and its value is smaller than the current smallest val
-        if(leftNdx <= H->lastNdx && H->Elem[leftNdx] < H->Elem[smallest]){
-            //if so, update the smallest to the index of the left child.
-            smallest = leftNdx;
-        }
-        //we check if a right child exists and its value is smaller than the current smallest val
-        if(rightNdx <= H->lastNdx && H->Elem[rightNdx] < H->Elem[smallest]){
-            //if so, update the smallest to the index of the right child
-            smallest = rightNdx;
-        }
-        //if smallest is not equivalent to index, then it means that one of the children
-        //has a smaller value than the current node
-        if(smallest != index){
-            //initiate the swapping
-            temp = H->Elem[index];
-            H->Elem[index] = H->Elem[smallest];
-            H->Elem[smallest] = temp;
-            index = smallest;
-        } else{ //if smallest == index, means the current node is already the smallest value
-            index++; //update index to the index of the next parent node
+void MinHeapify(HEAP *H) {
+    // sThis function converts an array into a min-heap by repeatedly sifting down nodes.
+    // It iterates through each parent node and ensures the subtree rooted at that parent satisfies the min-heap property.
+    // Note: This is a less efficient, but potentially more intuitive, approach than the standard heapify algorithm.
+    
+    int parentNdx;
+    // We need to check every node that could be a parent.
+    for (parentNdx = (H->lastNdx - 1) / 2; parentNdx >= 0; parentNdx--) {
+        
+        int currentNdx = parentNdx;
+        
+        // Sift-down the node at currentNdx to its correct position in the subtree.
+        while (1) { // Loop until the node is in the correct place.
+            int smallestNdx = currentNdx;
+            int leftChildNdx = 2 * currentNdx + 1;
+            int rightChildNdx = 2 * currentNdx + 2;
+            
+            // Check if the left child exists and is smaller than the current smallest.
+            if (leftChildNdx <= H->lastNdx && H->Elem[leftChildNdx] < H->Elem[smallestNdx]) {
+                smallestNdx = leftChildNdx;
+            }
+            
+            // Check if the right child exists and is smaller than the current smallest.
+            if (rightChildNdx <= H->lastNdx && H->Elem[rightChildNdx] < H->Elem[smallestNdx]) {
+                smallestNdx = rightChildNdx;
+            }
+            
+            // If the current node is already the smallest, it's in the right place.
+            if (smallestNdx == currentNdx) {
+                break; // Exit the sift-down loop for this parent.
+            }
+            
+            // Swap the current node with its smallest child and continue sifting down.
+            int temp = H->Elem[currentNdx];
+            H->Elem[currentNdx] = H->Elem[smallestNdx];
+            H->Elem[smallestNdx] = temp;
+            currentNdx = smallestNdx;
         }
     }
 }

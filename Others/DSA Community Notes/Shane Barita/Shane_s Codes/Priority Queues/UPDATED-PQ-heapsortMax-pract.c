@@ -37,29 +37,41 @@ void initialize(HEAP *H){
     H->lastNdx = -1;
 }
 void popUnsort(HEAP *H, int arr[], int size){
-    int index, childNdx;
+    int index;
     for(index = 0; index < size; index++){
-        if(H->lastNdx != SIZE-1){
-            H->Elem[childNdx = ++H->lastNdx] = arr[index];
-        }
+        // if(H->lastNdx != SIZE-1){
+        //     // Increment lastNdx first, then use it as the index to insert the new element.
+        //     H->lastNdx++;
+        //     H->Elem[H->lastNdx] = arr[index];
+        // }
+       H->Elem[++H->lastNdx] = arr[index];
     }
+
 }
 void insertPOT(HEAP *H, int x){
-    int temp, parentNdx, childNdx;
-    //check for available space
+    // This function inserts an element 'x' into a max-heap, maintaining the heap property.
+    // It's also known as "sift-up" or "percolate-up".
+    
+    // 1. Check if the heap has available space.
     if(H->lastNdx != SIZE-1){
-        //place new elem x at lowest level to the right
-        //of the leaves present or to the next level
-        H->Elem[childNdx = ++H->lastNdx] = x;
-
-        //while elem x is not root and POT property unsatisfied (parent < x)
-        while(H->Elem[0] != x && H->Elem[parentNdx = (childNdx-1)/2] < x){
-            //SWAP the elements in the parent index and child index
-            temp = H->Elem[parentNdx];
+        // 2. Insert the new element at the end of the heap.
+        H->lastNdx++; // end of the heap (lastNdx)
+        int childNdx = H->lastNdx;
+        H->Elem[childNdx] = x;
+        
+        // 3. Sift the new element up the tree to its correct position.
+        // We continue as long as the element is not at the root (childNdx > 0)
+        // and it is larger than its parent (violating the max-heap property).
+        int parentNdx = (childNdx - 1) / 2;
+        while (childNdx > 0 && H->Elem[childNdx] > H->Elem[parentNdx]){
+            // Swap the child with its parent.
+            int temp = H->Elem[parentNdx];
             H->Elem[parentNdx] = H->Elem[childNdx];
             H->Elem[childNdx] = temp;
-            //set the new child index to the current parent index
+            
+            // Move up the tree to check the next level.
             childNdx = parentNdx;
+            parentNdx = (childNdx - 1) / 2;
         }
     }
 }
