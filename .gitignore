@@ -8,7 +8,6 @@
 
 # Notes and other non-project files
 Others/
-Others
 .DSA Community Notes/
 
 # Compiled output
@@ -18,4 +17,4 @@ build/
 
 # Documents and generated reports
 *.pdf
-.rooothers/  
+.roo

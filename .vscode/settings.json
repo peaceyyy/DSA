@@ -60,5 +60,9 @@
     "*.embeddedhtml": "html",
     "bitvectorsetimplementationc": "c",
     "stdio.h": "c"
-  }
+  },
+  "cSpell.words": [
+    "aling",
+    "Palengke"
+  ]
 }
