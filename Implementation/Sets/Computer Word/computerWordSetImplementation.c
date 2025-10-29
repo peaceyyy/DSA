@@ -4,7 +4,7 @@
 typedef char SET        ;
 void displayBitPattern (SET A)
 {
-    int mask = 1 << sizeof(char) * 7;
+    unsigned int mask = 1 << sizeof(char) * 7;
 
     while (mask > 0)
     {
@@ -61,21 +61,23 @@ int isSubset (SET A, SET B)
 }
 
 
-// int main(){
-//     SET A; 
-//     initSet(&A);
+int main(){
+    SET A; 
+    initSet(&A);
 
 
-//     insertSet(&A, 7);
-//     insertSet(&A, 6);
-//     insertSet(&A, 5);
-//     insertSet(&A, 4);
-//     insertSet(&A, 3);
-//     insertSet(&A, 2);
-//     insertSet(&A, 1);
-//     insertSet(&A, 0);
-//     deleteSet(&A, 7);
-//     displayBitPattern(A);
-// }
+    // insertSet(&A, 7);
+    // insertSet(&A, 6);
+    // insertSet(&A, 5);
+    // insertSet(&A, 4);
+    // insertSet(&A, 3);
+    // insertSet(&A, 2);
+    // insertSet(&A, 1);
+    insertSet(&A, 0);
+    // deleteSet(&A, 7);
+    displayBitPattern(A);
+    printf("\n");
+    displaySetElements(A);
+}
 
 

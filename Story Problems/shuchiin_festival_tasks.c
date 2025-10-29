@@ -168,7 +168,7 @@ typedef struct Node {
 // TODO: Implement these functions
 void markTaskToList(TaskList *list, Task t)
 {
-
+    int found = 0;
     TaskNode *newTask = (TaskNode *)malloc(sizeof(TaskNode));
 
     if (!newTask)
@@ -176,11 +176,12 @@ void markTaskToList(TaskList *list, Task t)
 
     TaskList *trav;
 
-    for (trav = list; *trav != NULL && (*trav)->task.taskID != t.taskID; trav = &(*trav)->next)
+    for (trav = list; found != 1 && *trav != NULL; trav = &(*trav)->next)
     {
+        if ((*trav)->task.taskID == t.taskID) found = 1;
     }
 
-    if (*trav == NULL)
+    if (!found)
     {
         newTask->task = t;
         newTask->next = *trav;
@@ -327,8 +328,7 @@ TaskList allFestivalTasks(TaskList A, TaskList B)
         {
 
             *cptr = (TaskNode *)malloc(sizeof(TaskNode));
-            if (aptr->task.taskID == bptr->task.taskID)
-                aptr = aptr->next;
+            if (aptr->task.taskID == bptr->task.taskID) aptr = aptr->next;
             (*cptr)->task = bptr->task;
             bptr = bptr->next;
         }
@@ -372,9 +372,9 @@ bool isKaguyaSubsetOfShirogane(TaskList A, TaskList B)
         }
         else
         {
-            aptr = aptr->next;
+            bptr = bptr->next;
         }
     }
 
-    return (aptr != NULL);
+    return (aptr == NULL);
 }

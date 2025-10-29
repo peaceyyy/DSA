@@ -100,7 +100,7 @@ void insertProduct(PalengkeDict *dict, const char *name, int qty)
     }
 
     // Case 3: Collision — traverse synonym chain
-    else if (strcmp(dict->inventory[hashValue].productName, name) != 0)
+    else if (strcmp(dict->inventory[hashValue].productName, name) != 0 && dict->avail != -1)
     {
         int *trav;
 
@@ -119,17 +119,22 @@ void insertProduct(PalengkeDict *dict, const char *name, int qty)
 
             if (dict->avail != -1)
             {
-                printf("Inserted in synonym slot: %s\n", name);
+                printf("Inserted in synonym slot: %s at %d\n", name, dict->avail);
                 int temp = dict->inventory[dict->avail].link;
+
                 dict->inventory[dict->avail].link = dict->inventory[hashValue].link;
+
                 dict->inventory[hashValue].link = dict->avail;
 
                 strcpy(dict->inventory[dict->avail].productName, name);
                 dict->inventory[dict->avail].quantity = qty;
+                dict->inventory[dict->avail].status = USED;
                 // Allocate from avail (decrement pointer)
                 dict->avail = temp;
             }
         }
+    } else {
+        printf("Inventory system is full!");
     }
 }
 
@@ -139,7 +144,7 @@ int searchProduct(PalengkeDict dict, const char *name)
 
     int hashValue = hashProductName(name);
 
-    if (dict.inventory[hashValue].status != EMPTY)
+    if (dict.inventory[hashValue].status != EMPTY || dict.inventory[hashValue].status != DELETED )
     {
         if (strcmp(dict.inventory[hashValue].productName, name) == 0)
         {
@@ -167,6 +172,53 @@ int searchProduct(PalengkeDict dict, const char *name)
 // Delete a product from the inventory
 void deleteProduct(PalengkeDict *dict, const char *name)
 {
+    int hashValue = hashProductName(name);
+
+    if (dict->inventory[hashValue].status != EMPTY){
+
+        if (strcmp(dict->inventory[hashValue].productName, name) == 0)
+        {
+            int temp = dict->inventory[hashValue].link;
+            if (temp != -1)
+            {
+                ProductNode chainHead =  dict->inventory[dict->inventory[hashValue].link];
+                dict->inventory[hashValue] = chainHead;                
+                dict->inventory[temp].link = dict->avail;
+                dict->avail = temp;
+                printf("Deleted in home slot with links\n");
+            } else {
+                printf("Deleted in home slot with no links\n");
+                dict->inventory[hashValue].status = DELETED;
+            }
+        } else {
+
+            if (dict->inventory[hashValue].link != -1)
+            {
+                int* trav; 
+
+                for (trav = &dict->inventory[hashValue].link; *trav != -1 && strcmp(dict->inventory[*trav].productName, name) != 0; trav = &dict->inventory[*trav].link){}
+
+                if (*trav != -1)
+                {
+                    int temp = *trav;
+                    *trav = dict->inventory[temp].link;
+                    
+                    dict->inventory[temp].link = dict->avail;
+                    dict->avail = temp;
+                } else {
+                    
+                    printf("%s does not exist down the synonym chain!\n", name);
+                }
+            } else {
+                printf("%s does not exist because the home slot product is not equal to product nor does it have a chain\n!", name);
+            }
+
+            
+
+        }
+    } else {
+        printf("%s does not exist even in home slot!\n", name);
+    }
 }
 
 // --- DISPLAY FUNCTION ---
@@ -236,31 +288,36 @@ int main()
     printf("Ubas stock: %d (expected: 15)\n", searchProduct(aling_nena, "Ubas"));
     printf("Santol stock: %d (expected: 25)\n", searchProduct(aling_nena, "Santol"));
 
-    // printf("\n=== Test 5: Delete from prime area ===\n");
-    // deleteProduct(&aling_nena, "Saba");
-    // printf("Saba stock after delete: %d (expected: -1)\n", searchProduct(aling_nena, "Saba"));
-    // displayPalengke(aling_nena);
+    printf("\n=== Test 5: Delete from prime area ===\n");
+    deleteProduct(&aling_nena, "Saba");
+    printf("Saba stock after delete: %d (expected: -1)\n", searchProduct(aling_nena, "Saba"));
+    displayPalengke(aling_nena);
 
-    // printf("\n=== Test 6: Delete from synonym chain ===\n");
-    // deleteProduct(&aling_nena, "Ubas");
-    // printf("Ubas stock after delete: %d (expected: -1)\n", searchProduct(aling_nena, "Ubas"));
-    // displayPalengke(aling_nena);
+    printf("\n=== Test 6: Delete from synonym chain ===\n");
+    deleteProduct(&aling_nena, "Ubas");
+    printf("Ubas stock after delete: %d (expected: -1)\n", searchProduct(aling_nena, "Ubas"));
+    displayPalengke(aling_nena);
 
-    // printf("\n=== Test 7: Insert duplicate ===\n");
-    // insertProduct(&aling_nena, "Mangga", 40);
-    // printf("Mangga stock: %d (expected: 40)\n", searchProduct(aling_nena, "Mangga"));
+    printf("\n=== Test 7: Insert duplicate ===\n");
+    insertProduct(&aling_nena, "Mangga", 40);
+    printf("Mangga stock: %d (expected: 40)\n", searchProduct(aling_nena, "Mangga"));
 
-    // printf("\n=== Test 8: Fill up the synonym area ===\n");
-    // insertProduct(&aling_nena, "Bayabas", 10);
-    // insertProduct(&aling_nena, "Atis", 12);
-    // insertProduct(&aling_nena, "Guyabano", 8);
-    // insertProduct(&aling_nena, "Rambutan", 18);
-    // insertProduct(&aling_nena, "Lanzones", 22);
-    // displayPalengke(aling_nena);
+    printf("\n=== Test 8: Fill up the synonym area ===\n");
+    insertProduct(&aling_nena, "Bayabas", 10);
+    insertProduct(&aling_nena, "Atis", 12);
+    insertProduct(&aling_nena, "Guyabano", 8);
+    insertProduct(&aling_nena, "Rambutan", 18);
+    insertProduct(&aling_nena, "Lanzones", 22);
 
-    // printf("\n=== Test 9: Insert when synonym area is full ===\n");
-    // insertProduct(&aling_nena, "Suha", 5);
-    // printf("Suha stock: %d (expected: -1 if overflow)\n", searchProduct(aling_nena, "Suha"));
+
+    displayPalengke(aling_nena);
+
+    printf("\n=== Test 9: Insert when synonym area is full ===\n");
+    insertProduct(&aling_nena, "Suha", 5);
+    
+    printf("Suha stock: %d (expected: -1 if overflow)\n", searchProduct(aling_nena, "Suha"));
+  
+    
 
     return 0;
 }

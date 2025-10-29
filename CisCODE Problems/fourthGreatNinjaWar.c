@@ -162,6 +162,7 @@ Alliance neededNinjas(Alliance A, Alliance B)
     return C;
 }
 
+
 Alliance relocatingNinjas(Alliance A, Alliance B)
 {
     // printf("hi");
@@ -195,7 +196,7 @@ Alliance relocatingNinjas(Alliance A, Alliance B)
         }
         
         aptr = aptr->next;
-        bptr = bptr->next;
+        
     }
 
     while (aptr != NULL)
