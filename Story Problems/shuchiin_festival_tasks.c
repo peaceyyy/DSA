@@ -188,6 +188,7 @@ void markTaskToList(TaskList *list, Task t)
         *trav = newTask;
     }
 }
+
 TaskList commonTasks(TaskList A, TaskList B)
 {
 

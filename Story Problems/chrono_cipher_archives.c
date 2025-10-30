@@ -95,8 +95,7 @@ int countKeywords(ThoughtSet* set) {
 
     while (mask > 0)
     {
-        if ((set->keywords
- & mask) > 0u) count++;
+        if ((set->keywords & mask) != 0) count++;
         mask >>= 1;
     }
 
@@ -145,33 +144,12 @@ ThoughtSet differenceSets(ThoughtSet* setA, ThoughtSet* setB) {
  * @param setB A pointer to the potential superset.
  * @return 1 if setA is a subset of setB, 0 otherwise.
  */
+
 int isSubset(ThoughtSet* setA, ThoughtSet* setB) {
 
 
-    unsigned int mask = 1u << (8 * sizeof(setA->keywords) - 1);
- 
-    
-    int result = 1;
-
-    while (mask > 0 && result)
-    {
-        if ((setA->keywords & mask) > 0)
-        {
-            result = (setB->keywords & mask) > 0 ? 1 : 0;  
-        } 
-
-        mask >>= 1;
-    }
-
-    return result;
+    return (setA->keywords & setB->keywords) == setA->keywords ? 1 : 0;
 }
-
-
-// int isSubset(ThoughtSet* setA, ThoughtSet* setB) {
-
-
-//     return (setA->keywords & ~(setB->keywords)) > 0 ? 0 : 1;
-// }
 
 /**
  * @brief Displays the keywords in a ThoughtSet in binary format (for debugging).

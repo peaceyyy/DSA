@@ -328,6 +328,8 @@ int allocSpace(virtualHeap *VH)
     return ndx;
 }
 
+
+
 void deallocSpace(virtualHeap *VH, int ndx)
 {
     if (ndx > -1 && ndx < MAX)

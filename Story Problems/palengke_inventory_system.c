@@ -64,7 +64,7 @@ void initPalengke(PalengkeDict *dict)
         dict->inventory[i].quantity = 0;
     }
 
-    // printf("%d\n\n", MAX);
+    // max to half (v2);
     for (int i = MAX - 1; i >= PRIME_SIZE; i--)
     {
         dict->inventory[i].link = i - 1;
@@ -74,6 +74,17 @@ void initPalengke(PalengkeDict *dict)
 
     dict->inventory[PRIME_SIZE].link = -1;
     dict->avail = MAX - 1;
+
+    // half to max
+    //  for (int i = PRIME_SIZE; i < MAX; i++)
+    // {
+    //     dict->inventory[i].link = i + 1;
+    //     dict->inventory[i].status = EMPTY;
+    //     dict->inventory[i].quantity = 0;
+    // }
+
+    // dict->inventory[MAX - 1].link = -1;
+    // dict->avail = PRIME_SIZE;
     // printf("Avail: %d\n\n", dict->avail);
 }
 
@@ -129,6 +140,7 @@ void insertProduct(PalengkeDict *dict, const char *name, int qty)
                 strcpy(dict->inventory[dict->avail].productName, name);
                 dict->inventory[dict->avail].quantity = qty;
                 dict->inventory[dict->avail].status = USED;
+                
                 // Allocate from avail (decrement pointer)
                 dict->avail = temp;
             }
