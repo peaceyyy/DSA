@@ -14,7 +14,9 @@ Others/
 *.exe
 *.o
 build/
-
+.gitignore
 # Documents and generated reports
 *.pdf
 .roo
+
+mcp-guide/
