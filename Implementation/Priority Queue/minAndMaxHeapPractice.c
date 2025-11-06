@@ -316,7 +316,7 @@ int deleteMin(minHeap *H)
     return temp;
 }
 
-// Given an unsorted list (with data type mi*eap), the function
+// Given an unsorted list (with data type minheap), the function
 // will sort the elements in the given list in descending order
 // using heapsort technique.
 // a) Call insertAllMinHeap

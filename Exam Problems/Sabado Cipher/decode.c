@@ -16,7 +16,7 @@ int* bitmaskToArray(short int word[])
     // array to bit vvector
     
     // 8 bits, 4 words
-    int bitVectorArray[4][8];
+    int* bitVectorArray = malloc(sizeof(int) * 16);
   
     
     for (int i = 0; i < 4; i++)
