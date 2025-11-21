@@ -12,34 +12,28 @@
 // Write your functions here...
 int* bitmaskToArray(short int word[])
 {
+    const int WORDS = 4;
+    const int BITS = sizeof(unsigned short) * 8; // 16
+    int *bitVectorArr = malloc(WORDS * BITS * sizeof(int));
+    int ndx = 0;
     
-    // array to bit vvector
-    
-    // 8 bits, 4 words
-    int* bitVectorArray = malloc(sizeof(int) * 16);
-  
-    
-    for (int i = 0; i < 4; i++)
+    for (int i = 0; i < WORDS; i++)
     {
-        int currWord = word[i];
-        int currNdx = 7; 
-        
-        while (currNdx >= 0)
+        for (int mask = BITS - 1; mask >= 0; --mask)
         {
-
-            // printf("currNdx: %d = [%d], ", currNdx, currWord % 2);
-            bitVectorArray[i][currNdx--] = currWord % 2;
-            currWord = currWord / 2;
+            bitVectorArr[ndx++] = ((unsigned short) word[i] >> mask) & 1;
         }
-        
-        // printf("\n");
-    
     }
-    // displayBitPattern(bitVectorArray);
-    return bitVectorArray;
+    
+    for (int i = 0; i < 8; i++)
+    {
+        printf("%d", bitVectorArr[i]);
+        // printf("\n")
+    }
+    
+    return bitVectorArr;
 
-}
-char* decodeString(int arr[])
+} decodeString(int arr[])
 {
     // array to 8 letter string??
     // char* decodedString;

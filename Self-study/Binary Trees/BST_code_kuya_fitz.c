@@ -154,6 +154,13 @@ Boolean search(BST B, int e) {
     return (B == NULL) ? FALSE : (e == B->e) ? TRUE : (e < B->e) ? search(B->LC, e) : search(B->RC, e);
 }
 
+
+Boolean mySearch(BST B, int e) {
+
+        if (B == NULL) return FALSE;  else if (e < B->e) return mySearch(B->LC, e); else if (e > B->e) return mySearch(B->RC, e); else return TRUE;
+}
+
+
 Boolean searchIterative(BST B, int e) {
 
     for (; B != NULL && e != B->e; B = (e < B->e) ? B->LC : B->RC) {}
