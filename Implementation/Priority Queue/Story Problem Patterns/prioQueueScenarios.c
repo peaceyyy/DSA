@@ -42,15 +42,14 @@ void destroyHeap(minHeap* H) {
 void heapifyDown(minHeap *H, int i) {
     
     int currentNdx = i;
-    int noSwap = 0;
  
-    while (((currentNdx * 2) + 1 < H->size) && noSwap != 1)
+    while (1)
     {
         int smallerNdx = currentNdx;
         int LC = (currentNdx * 2) + 1;
         int RC = (currentNdx * 2) + 2;
 
-        if (LC <  H->elems[LC]) smallerNdx  = LC;
+        if (LC < H->size && H->elems[smallerNdx] > H->elems[LC]) smallerNdx = LC;
         if (RC < H->size && H->elems[smallerNdx] > H->elems[RC]) smallerNdx = RC;
 
         if (smallerNdx != currentNdx)
@@ -59,7 +58,7 @@ void heapifyDown(minHeap *H, int i) {
             currentNdx = smallerNdx;
         } else {
 
-            noSwap = 1;
+            break;
         }
 
     }
@@ -215,6 +214,8 @@ int deleteAt(minHeap *H, int index) {
             
             heapifyUp(H, index);
         }
+
+        return temp;
     }
 
 
@@ -239,15 +240,15 @@ void updateValue(minHeap *H, int index, int newValue) {
     
     if (index < H->size){
         
-        int temp = H->elems[index];
+        int oldValue = H->elems[index];
         H->elems[index] = newValue; 
-
-        if (H->elems[index] > temp)
+        
+        if (newValue > oldValue)
         {
-            heapifyUp(H, index);
-
-        } else {
             heapifyDown(H, index);
+            
+        } else {
+            heapifyUp(H, index);
         }
     }
 }
@@ -267,12 +268,15 @@ void getKSmallest(minHeap *H, int k, int result[]) {
     heapCopy->size = H->size;
     memcpy(heapCopy->elems, H->elems, sizeof(int) * H->size);
 
-    for (int i = 0; i < k - 1; i++)
-    {
-        result[i] = deleteMin(heapCopy);
-    }
+    printf("\n");
+    printHeap(heapCopy, "HEAP COPY:");
+    printf("\n");
 
-    
+    for (int i = 0; i < k; i++)
+    {   
+        int temp = deleteMin(heapCopy);
+        result[i] = temp;
+    }    
 }
 
 // Find the Kth smallest element efficiently
@@ -289,8 +293,11 @@ int findKthSmallest(minHeap *H, int k) {
     RETURN top of aux heap
     */
     
-    // Your implementation here
-    // Placeholder return to allow compilation.
+    
+    
+
+
+
     return -1;
 }
 
@@ -304,23 +311,49 @@ void minToMaxHeap(minHeap *H) {
         (compare and swap with LARGER child)
     */
     
-    // Your implementation here
+    
+    for (int firstParent = (H->size - 1)/2; firstParent >= 0; firstParent--)
+    {
+        // heapifyDown(H, firstParent);
+
+        int currentNdx = firstParent;
+    
+        while ((currentNdx * 2) + 1 <= H->size)
+        {
+            int largerNdx = currentNdx;
+            int LC  = (currentNdx * 2) + 1;
+            int RC  = (currentNdx * 2) + 2;
+
+            if (LC < H->size && H->elems[LC] > H->elems[largerNdx]) largerNdx = LC;
+            if (RC < H->size && H->elems[RC] > H->elems[largerNdx]) largerNdx = RC;
+            
+            if (currentNdx != largerNdx)
+            {
+                swap(&H->elems[currentNdx], &H->elems[largerNdx]);
+                currentNdx = largerNdx;
+            } else {
+                break;
+            }
+        }
+    }
 }
 
 
 // Combine two heaps efficiently
 minHeap* mergeHeaps(minHeap *H1, minHeap *H2) {
-    /*
-    PSEUDOCODE:
-    create new heap with combined size
-    copy all elements from both heaps
-    apply heapify to combined array
-    RETURN new heap
-    */
-    
-    // Your implementation here
-    // Placeholder: return NULL until real implementation provided.
-    return NULL;
+    minHeap* newHeap = initHeap(H1->capacity + H2->capacity);
+    memcpy(newHeap->elems, H1->elems, sizeof(int) * H1->size);
+    memcpy(newHeap->elems +  H1->size, H2->elems, sizeof(int) * H2->size);
+    newHeap->size = H1->size + H2->size;
+
+    for (int parentNdx = (newHeap->size - 1)/2; parentNdx >= 0; parentNdx--)
+    {
+        heapifyDown(newHeap, parentNdx);
+    } 
+
+    // printHeap(newHeap, "New Heap");
+
+    return newHeap;
 }
 
 
@@ -375,56 +408,51 @@ int main(void) {
     // printf("\n");
     // destroyHeap(h_insertIf);
     
-    /*
     // --- Test Block 3: deleteAt ---
-    printf("--- 3) Testing deleteAt ---\n");
-    minHeap* h_deleteAt = initHeap(10);
-    insert(h_deleteAt, 3); insert(h_deleteAt, 8); insert(h_deleteAt, 5); insert(h_deleteAt, 10); insert(h_deleteAt, 9);
-    printHeap(h_deleteAt, "Initial heap:");
-    int index_to_delete = 1; // Element 8
-    printf("Deleting element at index %d...\n", index_to_delete);
-    int deleted_val = deleteAt(h_deleteAt, index_to_delete);
-    printf("Deleted value should be 8. GOT: %d\n", deleted_val);
-    printHeap(h_deleteAt, "Heap after deletion:");
-    printf("\n");
-    destroyHeap(h_deleteAt);
-    */
+    // printf("--- 3) Testing deleteAt ---\n");
+    // minHeap* h_deleteAt = initHeap(10);
+    // insert(h_deleteAt, 3); insert(h_deleteAt, 8); insert(h_deleteAt, 5); insert(h_deleteAt, 10); insert(h_deleteAt, 9);
+    // printHeap(h_deleteAt, "Initial heap:");
+    // int index_to_delete = 1; // Element 8
+    // printf("Deleting element at index %d...\n", index_to_delete);
+    // int deleted_val = deleteAt(h_deleteAt, index_to_delete);
+    // printf("Deleted value should be 8. GOT: %d\n", deleted_val);
+    // printHeap(h_deleteAt, "Heap after deletion:");
+    // printf("\n");
+    // destroyHeap(h_deleteAt);
 
     // --- Test Block 4: updateValue ---
-    printf("--- 4) Testing updateValue ---\n");
-    minHeap* h_update = initHeap(10);
-    insert(h_update, 5); insert(h_update, 10); insert(h_update, 7); insert(h_update, 12); insert(h_update, 15);
-    printHeap(h_update, "Initial heap:");
-    int index_to_update = 2; // Element 7
-    int new_value = 3; // New value is smaller, should sift up
-    printf("Updating index %d from 7 to %d...\n", index_to_update, new_value);
-    updateValue(h_update, index_to_update, new_value);
-    printHeap(h_update, "Heap after update (sift up):");
+    // printf("--- 4) Testing updateValue ---\n");
+    // minHeap* h_update = initHeap(10);
+    // insert(h_update, 5); insert(h_update, 10); insert(h_update, 7); insert(h_update, 12); insert(h_update, 15);
+    // printHeap(h_update, "Initial heap:");
+    // int index_to_update = 2; // Element 7
+    // int new_value = 3; // New value is smaller, should sift up
+    // printf("Updating index %d from 7 to %d...\n", index_to_update, new_value);
+    // updateValue(h_update, index_to_update, new_value);
+    // printHeap(h_update, "Heap after update (sift up):");
     
-    new_value = 14; // New value is larger, should sift down
-    printf("Updating index 0 from 3 to %d...\n", new_value);
-    updateValue(h_update, 0, new_value);
-    printHeap(h_update, "Heap after update (sift down):");
-    printf("\n");
-    destroyHeap(h_update);
+    // new_value = 14; // New value is larger, should sift down
+    // printf("Updating index 0 from 3 to %d...\n", new_value);
+    // updateValue(h_update, 0, new_value);
+    // printHeap(h_update, "Heap after update (sift down):");
+    // printf("\n");
+    // destroyHeap(h_update);
     
-
-    /*
     // --- Test Block 5: getKSmallest ---
-    printf("--- 5) Testing getKSmallest ---\n");
-    minHeap* h_getK = initHeap(10);
-    insert(h_getK, 5); insert(h_getK, 1); insert(h_getK, 4); insert(h_getK, 2); insert(h_getK, 3);
-    printHeap(h_getK, "Initial heap:");
-    int k_smallest = 3;
-    int* result_k = (int*)malloc(sizeof(int) * k_smallest);
-    printf("Getting %d smallest elements...\n", k_smallest);
-    getKSmallest(h_getK, k_smallest, result_k);
-    printf("Expected [1 2 3]. GOT: [");
-    for(int i=0; i<k_smallest; ++i) printf("%d ", result_k[i]);
-    printf("]\n\n");
-    free(result_k);
-    destroyHeap(h_getK);
-    */
+    // printf("--- 5) Testing getKSmallest ---\n");
+    // minHeap* h_getK = initHeap(10);
+    // insert(h_getK, 5); insert(h_getK, 1); insert(h_getK, 4); insert(h_getK, 2); insert(h_getK, 3);
+    // printHeap(h_getK, "Initial heap:");
+    // int k_smallest = 3;
+    // int* result_k = (int*)malloc(sizeof(int) * k_smallest);
+    // printf("Getting %d smallest elements...\n", k_smallest);
+    // getKSmallest(h_getK, k_smallest, result_k);
+    // printf("Expected [1 2 3]. GOT: [");
+    // for(int i=0; i<k_smallest; ++i) printf("%d ", result_k[i]);
+    // printf("]\n\n");
+    // free(result_k);
+    // destroyHeap(h_getK);
 
     /*
     // --- Test Block 6: findKthSmallest ---
@@ -439,7 +467,6 @@ int main(void) {
     destroyHeap(h_findK);
     */
 
-    /*
     // --- Test Block 7: minToMaxHeap ---
     printf("--- 7) Testing minToMaxHeap ---\n");
     minHeap* h_transform = initHeap(10);
@@ -453,9 +480,7 @@ int main(void) {
     for(int i=0; i<h_transform->size; ++i) printf("%d ", h_transform->elems[i]);
     printf("\n\n");
     destroyHeap(h_transform);
-    */
 
-    /*
     // --- Test Block 8: mergeHeaps ---
     printf("--- 8) Testing mergeHeaps ---\n");
     minHeap* h1 = initHeap(10);
@@ -465,7 +490,6 @@ int main(void) {
     minHeap* h2 = initHeap(10);
     insert(h2, 2); insert(h2, 6); insert(h2, 4);
     printHeap(h2, "Heap 2:");
-
     printf("Merging heaps...\n");
     minHeap* merged = mergeHeaps(h1, h2);
     if (merged != NULL) {
@@ -476,7 +500,6 @@ int main(void) {
     }
     destroyHeap(h1);
     destroyHeap(h2);
-    */
 
     return 0;
 }

@@ -64,5 +64,7 @@
   "cSpell.words": [
     "aling",
     "Palengke"
-  ]
+  ],
+  "python-envs.defaultEnvManager": "ms-python.python:pyenv",
+  "python-envs.pythonProjects": []
 }
