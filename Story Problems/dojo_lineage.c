@@ -135,10 +135,41 @@ void display_lineage(DojoLineage dojo) {
  * @param dojo The dojo lineage structure.
  * @return The ID of the master, or -1 if not found or the student is the Grand Master.
  */
+
+
+ /*
+ #define MAX_PRACTITIONERS 10
+
+// A node in the list of children
+typedef struct node {
+    int id;
+    struct node* next;
+}*StudentList;
+
+// The Tree represents the entire Dojo's lineage
+typedef struct {
+    StudentList masters[MAX_PRACTITIONERS]; // Each master has a list of their students
+    int root_sensei_id;                     // The ID of the head of the dojo
+} DojoLineage;
+ 
+ */
 int get_master(int student_id, DojoLineage dojo) {
     // TODO: Implement this function.
     // Traverse the masters array. For each master, traverse their list of students.
     // If student_id is found, return the master's ID (the index).
+
+    for (int i = 0; i < MAX_PRACTITIONERS; i++)
+    {
+        StudentList trav = dojo.masters[i];
+
+        while (trav != NULL)
+        {   
+            if (trav->id == student_id) return i;
+
+            trav = trav ->next;
+        }
+    }
+
     return -1; // Placeholder
 }
 
@@ -152,7 +183,12 @@ int get_first_student(int master_id, DojoLineage dojo) {
     // TODO: Implement this function.
     // Check if the master_id is valid and if their student list is not empty.
     // If so, return the ID of the first node in the list.
-    return -1; // Placeholder
+
+    if (master_id < MAX_PRACTITIONERS)
+    {
+        return (dojo.masters[master_id] != NULL) ? dojo.masters[master_id]->id : -1;
+    }
+
 }
 
 /**
@@ -166,6 +202,15 @@ int get_next_dojo_brother(int student_id, DojoLineage dojo) {
     // First, find the master of the given student_id.
     // Then, traverse that master's student list. When you find the student_id,
     // return the ID of the next student in the list.
+
+    int studentMaster = get_master(student_id, dojo);
+    StudentList trav = dojo.masters[studentMaster];
+
+    while (trav -> next != NULL)
+    {
+        if (trav->id == student_id) return trav->next->id;
+        trav = trav -> next;
+    }
     return -1; // Placeholder
 }
 
@@ -175,6 +220,5 @@ int get_next_dojo_brother(int student_id, DojoLineage dojo) {
  * @return The ID of the Grand Master.
  */
 int get_grand_master(DojoLineage dojo) {
-    // TODO: Implement this function.
-    return -1; // Placeholder
+    return dojo.root_sensei_id;
 }
