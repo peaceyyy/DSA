@@ -78,10 +78,10 @@ int *Dijkstra(Graph G, int startV){
         // A. Choose a vertex 'minVertex' that is unvisited such that dist[minVertex] is minimum
         for (int currVertex = 0; currVertex < SIZE; currVertex++)
         {
-            if (visitedVertices[x] != 1 && shortestDistanceArray[currVertex] < minDistance)
+            if (visitedVertices[x] != 1 && shortestDistanceArray[currVertex] < minDistance )
             {
                 minDistance = shortestDistanceArray[currVertex];
-                minVertex = x;
+                minVertex = currVertex ;
                 
             }
         }
@@ -91,13 +91,13 @@ int *Dijkstra(Graph G, int startV){
          // C. For each vertex v in visited, relax the edge minVertex -> v
         for (int currentVertex = 0; currentVertex < SIZE; currentVertex++)
         {
-            if (visitedVertices[currentVertex] == 1)
+            if (visitedVertices[currentVertex] != 1)
             {   
                 alternatePathDistance = shortestDistanceArray[currentVertex] + G[minVertex][currentVertex]
 
-                if (shortestDistanceArray[currentVertex]  < )
+                if (shortestDistanceArray[currentVertex]  < alternatePathDistance )
                 {
-
+                    shortestDistanceArray = 
                 }
             }
         }

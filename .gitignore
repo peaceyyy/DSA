@@ -18,5 +18,7 @@ build/
 # Documents and generated reports
 *.pdf
 .roo
+**.md
 
 mcp-guide/
+Exam Problems/*
