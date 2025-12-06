@@ -36,11 +36,38 @@ The arcade's legacy system uses compact 8-bit registers for efficient storage.
 typedef unsigned char ACHIEVEMENT_REGISTER;
 
 // TODO: Implement these functions
-ACHIEVEMENT_REGISTER universalElite(ACHIEVEMENT_REGISTER *players, int count);
-ACHIEVEMENT_REGISTER exclusiveMastery(ACHIEVEMENT_REGISTER ryota, ACHIEVEMENT_REGISTER yuki);
-ACHIEVEMENT_REGISTER combinedLegacy(ACHIEVEMENT_REGISTER *players, int count);
-int mutualGaps(ACHIEVEMENT_REGISTER ryota, ACHIEVEMENT_REGISTER yuki);
-int mentorshipCheck(ACHIEVEMENT_REGISTER mentor, ACHIEVEMENT_REGISTER mentee);
+ACHIEVEMENT_REGISTER universalElite(ACHIEVEMENT_REGISTER *players, int count){
+    
+    ACHIEVEMENT_REGISTER result = players[0];
+    for (int i = 1; i < count; i++){
+
+    result = result & players[i];
+        
+    }
+
+    return result;
+
+}
+ACHIEVEMENT_REGISTER exclusiveMastery(ACHIEVEMENT_REGISTER ryota, ACHIEVEMENT_REGISTER yuki){
+    return ryota ^ yuki;
+}
+ACHIEVEMENT_REGISTER combinedLegacy(ACHIEVEMENT_REGISTER *players, int count){
+    ACHIEVEMENT_REGISTER result = players[0];
+    for (int i = 1; i < count; i++){
+
+    result = result | players[i];
+        
+    }
+
+    return result;
+}
+int mutualGaps(ACHIEVEMENT_REGISTER ryota, ACHIEVEMENT_REGISTER yuki){
+
+    return ((ryota & yuki) == 0) ? 1 : 0;
+}
+int mentorshipCheck(ACHIEVEMENT_REGISTER mentor, ACHIEVEMENT_REGISTER mentee){
+    return ((mentor & mentee) == mentee) ? 1 : 0;
+}
 
 // --- Helper Functions (Already Implemented) ---
 void initRegister(ACHIEVEMENT_REGISTER *reg) {

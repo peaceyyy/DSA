@@ -36,11 +36,26 @@ represents a festival. Your task is to implement the ritual analysis operations.
 typedef unsigned char BLESSING_MARK;
 
 // TODO: Implement these functions
-BLESSING_MARK sharedBlessings(BLESSING_MARK haruto, BLESSING_MARK sakura);
-BLESSING_MARK uniquePath(BLESSING_MARK haruto, BLESSING_MARK sakura);
-BLESSING_MARK combinedExperience(BLESSING_MARK haruto, BLESSING_MARK sakura);
-BLESSING_MARK missingBlessings(BLESSING_MARK haruto);
-int isPathContained(BLESSING_MARK container, BLESSING_MARK subset);
+BLESSING_MARK sharedBlessings(BLESSING_MARK haruto, BLESSING_MARK sakura){
+
+    // printf("%c\n", haruto);
+    return haruto & sakura;
+}
+BLESSING_MARK uniquePath(BLESSING_MARK haruto, BLESSING_MARK sakura){
+
+    return haruto & ~sakura;
+}
+BLESSING_MARK combinedExperience(BLESSING_MARK haruto, BLESSING_MARK sakura){
+    return haruto | sakura; 
+}
+
+BLESSING_MARK missingBlessings(BLESSING_MARK haruto){
+    return ~haruto;
+}
+int isPathContained(BLESSING_MARK container, BLESSING_MARK subset){
+
+    return ((container & subset) == subset) ? 1 : 0;
+}
 
 // --- Helper Functions (Already Implemented) ---
 void initMark(BLESSING_MARK *mark) {

@@ -20,23 +20,6 @@ Three categories of passengers hold different access privileges:
 
 A system upgrade requires implementing complex access validation logic:
 
-1. **Restricted Zone Detection**: Lines accessible to Express but FORBIDDEN to Local 
-   (security-critical rapid routes)
-
-2. **Universal Access Verification**: Lines available to ALL three passenger types 
-   (core infrastructure)
-
-3. **Priority Lane Extraction**: Given a bitmask of "premium service" lines, extract 
-   which lines are accessible to Express travelers AND match the premium criteria
-
-4. **Selective Revocation**: Remove specific line access from a passenger's badge 
-   (complementary masking operation)
-
-5. **Cascade Union**: Merge all three passenger type registers into a master "All Lines" 
-   register, then determine which lines are NOT covered by any pass type (maintenance gaps)
-
-The system uses bitwise operations for microsecond-level validation at ticket gates.
-
 ========================================
 */
 
@@ -45,13 +28,61 @@ The system uses bitwise operations for microsecond-level validation at ticket ga
 
 typedef unsigned char ACCESS_BADGE;
 
-// TODO: Implement these functions
-ACCESS_BADGE restrictedZoneDetection(ACCESS_BADGE express, ACCESS_BADGE local);
-ACCESS_BADGE universalAccessVerification(ACCESS_BADGE local, ACCESS_BADGE express, ACCESS_BADGE airport);
-ACCESS_BADGE priorityLaneExtraction(ACCESS_BADGE express, ACCESS_BADGE premiumMask);
-ACCESS_BADGE selectiveRevocation(ACCESS_BADGE badge, ACCESS_BADGE revokeLines);
-ACCESS_BADGE cascadeUnion(ACCESS_BADGE local, ACCESS_BADGE express, ACCESS_BADGE airport);
-ACCESS_BADGE maintenanceGaps(ACCESS_BADGE allLines);
+/*
+1. **Restricted Zone Detection**: Lines accessible to Express but FORBIDDEN to Local 
+   (security-critical rapid routes)
+*/
+ACCESS_BADGE restrictedZoneDetection(ACCESS_BADGE express, ACCESS_BADGE local){
+
+    return express & ~local;
+}
+
+/*
+2. **Universal Access Verification**: Lines available to ALL three passenger types 
+   (core infrastructure)
+
+*/
+ACCESS_BADGE universalAccessVerification(ACCESS_BADGE local, ACCESS_BADGE express, ACCESS_BADGE airport){
+
+    return (local & express) & airport;
+
+}
+
+/*
+3. **Priority Lane Extraction**: Given a bitmask of "premium service" lines, extract. which lines are accessible to Express travelers AND match the premium criteria
+
+*/
+ACCESS_BADGE priorityLaneExtraction(ACCESS_BADGE express, ACCESS_BADGE premiumMask){
+
+    return express & premiumMask;
+}
+
+/*
+4. **Selective Revocation**: Remove specific line access from a passenger's badge 
+   (complementary masking operation)
+*/
+ACCESS_BADGE selectiveRevocation(ACCESS_BADGE badge, ACCESS_BADGE revokeLines){
+
+    return badge - revokeLines;
+    
+}
+
+/*
+
+
+5. **Cascade Union**: Merge all three passenger type registers into a master "All Lines" 
+   register, then determine which lines are NOT covered by any pass type (maintenance gaps)
+*/
+ACCESS_BADGE cascadeUnion(ACCESS_BADGE local, ACCESS_BADGE express, ACCESS_BADGE airport){
+
+    return (local | express) | airport;
+
+
+}
+ACCESS_BADGE maintenanceGaps(ACCESS_BADGE allLines){
+
+        return ~allLines;
+}
 
 // --- Helper Functions (Already Implemented) ---
 void initBadge(ACCESS_BADGE *badge) {
