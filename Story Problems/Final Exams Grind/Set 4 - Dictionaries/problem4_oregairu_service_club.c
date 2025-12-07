@@ -91,8 +91,10 @@ typedef RequestSlot RequestBoard[BOARD_SIZE];
 
 void initRequestBoard(RequestBoard board)
 {
-    for (int i = 0; i < MAX_PROBES; i++){
+    for (int i = 0; i < MAX_PROBES; i++)
+    {
         board[i].priorityLevel = EMPTY;
+        board[i].requestID = EMPTY;
     }
 }
 
@@ -104,56 +106,310 @@ int hashRequest(int requestID)
 
 int isGenuine(int requestID)
 {
-    
+
     return (requestID % 7 == 0) ? 1 : 0;
 }
 
-void submitRequest(RequestBoard board, int requestID, int priorityLevel)
-{
+/*
+4. **submitRequest(board, requestID, priorityLevel)**: Add a request
+   - If genuine: Place at `hash(requestID)` without probing (overwrite if needed)
+   - If not genuine: Use quadratic probing to find EMPTY or DELETED slot
+     Probe sequence: `(hash + i*i) % 17` for i = 0, 1, 2, 3, ...
+   - Store as positive value: `requestID`
+   - Track priority separately (see struct below)
+   - If duplicate found, update priority instead
+
+
+*/
+void submitRequest(RequestBoard board, int requestID, int priorityLevel) {
     int hashValue = hashRequest(requestID);
-    if (board[hashValue].requestID == requestID){
-        printf("Request ID of %d already in home slot!", requestID);
+    
+    // Genuine requests bypass probing
+    if (isGenuine(requestID)) {
+        board[hashValue].requestID = requestID;
+        board[hashValue].priorityLevel = priorityLevel;
         return;
     }
-
-    if (board[hashValue].priorityLevel != EMPTY && board[hashValue].priorityLevel != DELETED){
-
+    
+    // Quadratic probing for regular requests
+    int firstDeletedSlot = -1;
+    for (int i = 0; i < MAX_PROBES; i++) {
+        int probe_idx = (hashValue + i * i) % BOARD_SIZE;
         
-
-    } else {
-
-        board[hashValue].priorityLevel = priorityLevel;
-        board[hashValue].requestID = requestID;
+        // Duplicate found — update priority
+        if (board[probe_idx].requestID == requestID) {
+            board[probe_idx].priorityLevel = priorityLevel;
+            return;
+        }
+        
+        // Track first DELETED for reuse
+        if (board[probe_idx].requestID == DELETED && firstDeletedSlot == -1) {
+            firstDeletedSlot = probe_idx;
+        }
+        
+        // EMPTY found — insert here or at first DELETED
+        if (board[probe_idx].requestID == EMPTY) {
+            int insert_pos = (firstDeletedSlot == -1) ? probe_idx : firstDeletedSlot;
+            board[insert_pos].requestID = requestID;
+            board[insert_pos].priorityLevel = priorityLevel;
+            return;
+        }
+    }
+    
+    // If we exit loop without inserting, table is full (or use firstDeletedSlot)
+    if (firstDeletedSlot != -1) {
+        board[firstDeletedSlot].requestID = requestID;
+        board[firstDeletedSlot].priorityLevel = priorityLevel;
     }
 }
+
+/*
+
+
+5. **resolveRequest(board, requestID)**: Mark request as DELETED
+   - Use quadratic probing to find it
+   - Set to DELETED (-1)
+
+
+
+*/
 
 void resolveRequest(RequestBoard board, int requestID)
 {
-    // TODO
+    int hashValue = hashRequest(requestID);
+    int firstDeletedSlot, foundDeletedSlot = 0;
+    if (board[hashValue].requestID == requestID)
+    {
+        // printf("Request ID of %d updated in home slot!\n", requestID);
+        board[hashValue].requestID = DELETED;
+        return;
+    }
+    if (board[hashValue].requestID == EMPTY)
+    {
+        // printf("Request ID of %d not in the board\n", requestID);
+    }
+    else
+    {
+        if (isGenuine(requestID))
+        {
+
+            board[hashValue].requestID = DELETED;
+        }
+        else
+        {
+            int i;
+            for (i = 0; i < MAX_PROBES; i++)
+            {
+
+                int probe_idx = (hashValue + i * i) % BOARD_SIZE;
+
+                if (board[probe_idx].requestID == requestID)
+                {
+                    // printf("Request ID of %d in probed slot of index %d! Updating request ID!", requestID, i);
+                    board[probe_idx].requestID = DELETED;
+                    return;
+                }
+
+                if (board[probe_idx].requestID == EMPTY)
+                {
+                    printf("Request ID of %d not in the board!\n", requestID);
+                    return;
+                }
+            }
+        }
+    }
 }
+
+/*
+
+6. **findRequest(board, requestID)**: Check if request exists
+   - Return 1 if found, 0 otherwise
+   - Must probe quadratically
+
+
+*/
 
 int findRequest(RequestBoard board, int requestID)
 {
-    // TODO
-    return 0;
+    int hashValue = hashRequest(requestID);
+    int firstDeletedSlot, foundDeletedSlot = 0;
+    if (board[hashValue].requestID == requestID)
+    {
+        // printf("Request ID %d found in home slot!\n", requestID);
+        return 1;
+    }
+    if (board[hashValue].requestID == EMPTY)
+    {
+        // printf("Request ID of %d not in the board\n", requestID);
+        return 0;
+    }
+    else
+    {
+        if (isGenuine(requestID))
+        {
+            if(board[hashValue].requestID == requestID){
+                return 1;
+            } else 
+            {
+                return 0;
+            }
+        }
+        else
+        {
+            int i;
+            for (i = 0; i < MAX_PROBES; i++)
+            {
+
+                int probe_idx = (hashValue + i * i) % BOARD_SIZE;
+
+                if (board[probe_idx].requestID == requestID)
+                {
+                    printf("Request ID of %d in probed slot of index %d!", requestID, i);
+                    return 1;
+                }
+
+                if (board[probe_idx].priorityLevel == EMPTY)
+                {
+                    printf("Request ID of %d not in the board!\n", requestID);
+                    return 0;
+                }
+            }
+        }
+    }
 }
+
+/*
+7. **getPriority(board, requestID)**: Return priority level
+   - Return priority if found, -1 otherwise
+
+
+
+*/
 
 int getPriority(RequestBoard board, int requestID)
 {
-    // TODO
+    int hashValue = hashRequest(requestID);
+    int firstDeletedSlot, foundDeletedSlot = 0;
+    if (board[hashValue].requestID == requestID)
+    {
+        // printf("Request ID %d found in home slot!\n", requestID);
+        return board[hashValue].priorityLevel;
+    }
+    if (board[hashValue].requestID == EMPTY)
+    {
+        // printf("Request ID of %d not in the board\n", requestID);
+        return -1;
+    }
+    else
+    {
+        if (isGenuine(requestID))
+        {
+            if(board[hashValue].requestID == requestID){
+                return board[hashValue].priorityLevel;
+            } else 
+            {
+                return -1;
+            }
+        }
+        else
+        {
+            int i;
+            for (i = 0; i < MAX_PROBES; i++)
+            {
+
+                int probe_idx = (hashValue + i * i) % BOARD_SIZE;
+
+                if (board[probe_idx].requestID == requestID)
+                {
+                    printf("Request ID of %d in probed slot of index %d Returning prio level\n!", requestID, i);
+                    return board[probe_idx].priorityLevel;
+                }
+
+                if (board[probe_idx].priorityLevel == EMPTY)
+                { 
+                    printf("Request ID of %d not in the board!\n", requestID);
+                    return -1;
+                }
+            }
+        }
+    }
+    return -1;
+}
+/*
+8. **calculateProbeCount(board, requestID)**: Count probes needed to find or place
+   - Return number of probes (1 if at home position, >1 if probed)
+   - Return -1 if not found
+
+*/
+int calculateProbeCount(RequestBoard board, int requestID)
+{
+    
+     int hashValue = hashRequest(requestID);
+    int firstDeletedSlot, foundDeletedSlot = 0;
+    if (board[hashValue].requestID == requestID)
+    {
+        // printf("Request ID %d found in home slot!\n", requestID);
+        return 1;
+    }
+    if (board[hashValue].requestID == EMPTY)
+    {
+        printf("Request ID of %d not in the board\n", requestID);
+        return -1;
+    }
+    else
+    {
+        if (isGenuine(requestID))
+        {
+            if(board[hashValue].requestID == requestID){
+                return 1;
+            } else 
+            {
+                return -1;
+            }
+        }
+        else
+        {
+            int i;
+            for (i = 0; i < MAX_PROBES; i++)
+            {
+
+                int probe_idx = (hashValue + i * i) % BOARD_SIZE;
+
+                if (board[probe_idx].requestID == requestID)
+                {
+                    printf("Request ID of %d in probed slot of index %d Returning prio level\n!", requestID, i);
+                    return i;
+                }
+
+                if (board[probe_idx].priorityLevel == EMPTY)
+                { 
+                    printf("Request ID of %d not in the board!\n", requestID);
+                    return -1;
+                }
+            }
+        }
+    }
     return -1;
 }
 
-int calculateProbeCount(RequestBoard board, int requestID)
-{
-    // TODO
-    return -1;
-}
+/*
+9. **getHighestPriorityRequest(board)**: Find requestID with highest priority
+    - Return requestID, or -1 if board empty
+
+*/
 
 int getHighestPriorityRequest(RequestBoard board)
 {
-    // TODO
-    return -1;
+
+    int highestPrioRequest = -1;
+
+    for (int i = 0; i < BOARD_SIZE; i++)
+    {
+
+        if (board[i].priorityLevel > highestPrioRequest) highestPrioRequest = board[i].requestID;
+    }
+
+    return highestPrioRequest;
 }
 
 void displayBoard(RequestBoard board)
