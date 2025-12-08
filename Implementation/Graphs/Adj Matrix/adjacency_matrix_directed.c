@@ -31,10 +31,17 @@ TOMORROW: You'll add DFS/BFS functions to this structure.
 
 typedef int AdjMatrix[MAX][MAX];
 
+// Core functions
 void initMatrix(AdjMatrix M);
 void insertEdge(AdjMatrix M, int edge[2]);
 void displayMatrix(AdjMatrix M);
 void displayEdges(AdjMatrix M);
+// Helper functions (exam-essential)
+int checkEdge(AdjMatrix M, int u, int v);
+void removeEdge(AdjMatrix M, int edge[2]);
+int countEdges(AdjMatrix M);
+int getNeighbors(AdjMatrix M, int u, int neighbors[]);
+int isIsolated(AdjMatrix M, int v);
 
 int main() {
     // Sample directed graph: 1→2, 2→3, 3→0
@@ -61,7 +68,35 @@ int main() {
 
     printf("\n=== EDGE LIST ===\n");
     displayEdges(M);
-    // Expected: Edges: (1, 2) (2, 3) (3, 0)
+    printf("Expected: Edges: (1, 2) (2, 3) (3, 0)\n");
+
+    printf("\n=== TESTING HELPER FUNCTIONS ===\n");
+    
+    // Test countEdges
+    printf("Total edges: %d (Expected: 3)\n", countEdges(M));
+
+    // Test checkEdge
+    printf("Check edge 1->2: %s (Expected: Exists)\n", checkEdge(M, 1, 2) ? "Exists" : "Missing");
+    printf("Check edge 1->0: %s (Expected: Missing)\n", checkEdge(M, 1, 0) ? "Exists" : "Missing");
+
+    // Test getNeighbors
+    int neighbors[MAX];
+    int count = getNeighbors(M, 2, neighbors);
+    printf("Neighbors of 2: ");
+    for(int i=0; i<count; i++) printf("%d ", neighbors[i]);
+    printf("(Expected: 3)\n");
+
+    // Test isIsolated
+    printf("Is Node 4 isolated? %s (Expected: Yes)\n", isIsolated(M, 4) ? "Yes" : "No");
+    printf("Is Node 1 isolated? %s (Expected: No)\n", isIsolated(M, 1) ? "Yes" : "No");
+
+    // Test removeEdge
+    printf("\nRemoving edge 2->3...\n");
+    int edgeToRemove[] = {2, 3};
+    removeEdge(M, edgeToRemove);
+    displayEdges(M);
+    printf("Expected: Edges: (1, 2) (3, 0)\n");
+    printf("Total edges after removal: %d (Expected: 2)\n", countEdges(M));
 
     printf("\n");
     return 0;
@@ -102,6 +137,69 @@ void displayEdges(AdjMatrix M) {
             }
         }
     }
+}
+
+// ============================================
+// HELPER FUNCTIONS (Exam-Essential)
+// ============================================
+
+// Check if edge exists between two vertices
+// Returns: 1 if edge exists, 0 otherwise
+int checkEdge(AdjMatrix M, int u, int v) {
+    if (u < 0 || u >= MAX || v < 0 || v >= MAX)        // bounds check
+        return 0;                                       // invalid vertices
+    return M[u][v];                                     // return 1 if edge exists, 0 otherwise
+}
+
+// Remove directed edge between two vertices
+// edge[0] = source vertex, edge[1] = destination vertex
+void removeEdge(AdjMatrix M, int edge[2]) {
+    int u = edge[0], v = edge[1];                       // extract source and dest
+    if (u < 0 || u >= MAX || v < 0 || v >= MAX)        // bounds check
+        return;                                         // invalid vertices
+    M[u][v] = 0;                                        // remove edge by setting to 0
+}
+
+// Count total number of edges in the graph
+// Returns: Total edge count
+int countEdges(AdjMatrix M) {
+    int count = 0;                                      // initialize counter
+    for (int i = 0; i < MAX; i++) {                     // for each row (source vertex)
+        for (int j = 0; j < MAX; j++) {                 // for each column (dest vertex)
+            if (M[i][j] == 1)                           // if edge exists
+                count++;                                // increment counter
+        }
+    }
+    return count;                                       // return total
+}
+
+// Get all neighbors of a vertex (outgoing edges)
+// Fills neighbors[] array and returns count
+// neighbors[] must be pre-allocated with size MAX
+int getNeighbors(AdjMatrix M, int u, int neighbors[]) {
+    if (u < 0 || u >= MAX)                              // bounds check
+        return 0;                                       // invalid vertex
+    
+    int count = 0;                                      // initialize neighbor count
+    for (int v = 0; v < MAX; v++) {                     // scan row u
+        if (M[u][v] == 1) {                             // if edge u->v exists
+            neighbors[count++] = v;                     // store neighbor and increment
+        }
+    }
+    return count;                                       // return number of neighbors found
+}
+
+// Check if vertex has no outgoing edges
+// Returns: 1 if isolated, 0 otherwise
+int isIsolated(AdjMatrix M, int v) {
+    if (v < 0 || v >= MAX)                              // bounds check
+        return 0;                                       // invalid vertex
+    
+    for (int j = 0; j < MAX; j++) {                     // scan row v
+        if (M[v][j] == 1)                               // if any outgoing edge exists
+            return 0;                                   // not isolated
+    }
+    return 1;                                           // no outgoing edges = isolated
 }
 
 
