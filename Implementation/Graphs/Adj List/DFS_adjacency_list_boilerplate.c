@@ -83,31 +83,64 @@ void addEdge(Graph *graph, int src, int dest) {
 // =========================================================================
 
 void DFS_Recursive_Helper(Graph *graph, int vertex, bool visited[]) {
-    // TODO: Implement recursive DFS helper
-    // 1. Mark current vertex as visited
-    // 2. Print the vertex
-    // 3. Loop through adjacency list and recursively visit unvisited neighbors
+    
+  
+
+    visited[vertex] = true;
+
+    // printf("printing from: %d\n", vertex);
+    printf("%d ", vertex);
+    
+    
+    EdgeNode* trav = graph->adjList[vertex];
+    while (trav != NULL )
+    {
+
+        if (!visited[trav->vertex]){
+            DFS_Recursive_Helper(graph, trav->vertex, visited);
+            visited[trav->vertex] = true;
+        }
+
+        trav = trav->next;
+    }
 }
 
 void DFS_Recursive(Graph *graph, int startVertex) {
-    // TODO: Implement recursive DFS wrapper
-    // 1. Create and initialize visited array
-    // 2. Print header message
-    // 3. Call DFS_Recursive_Helper
-    // 4. Print newline
+    printf("DFS Recursive (starting from vertex %d): ", startVertex);
+    bool visited[MAX] = {false};
+    
+    DFS_Recursive_Helper(graph, startVertex, visited);  // Start DFS from given vertex
+    printf("\n");
 }
 
 void DFS_Iterative(Graph *graph, int startVertex) {
-    // TODO: Implement iterative DFS using stack
-    // 1. Create and initialize visited array
-    // 2. Create and initialize stack
-    // 3. Push start vertex
-    // 4. While stack not empty:
-    //    - Pop vertex
-    //    - If already visited, skip
-    //    - Mark visited and print
-    //    - Push all unvisited neighbors
-    // 5. Print newline
+    
+    printf("DFS Iterative (starting from vertex %d): ", startVertex);
+    
+    bool visited[MAX ]= {false};
+    Stack imastack;
+    initStack(&imastack);
+
+    push(&imastack, startVertex);
+    visited[startVertex] = true;
+
+    while (!isEmptyStack(imastack))
+    {
+        int curr = pop(&imastack);
+        printf("%d ", curr);
+
+        EdgeNode* marites; 
+        for (marites = graph->adjList[curr]; marites != NULL; marites = marites->next)
+        {
+            if (!visited[marites->vertex])
+            {
+                visited[marites->vertex] = true;
+                push(&imastack, marites->vertex);
+            }
+        }    
+    
+    }
+
 }
 
 // =========================================================================
@@ -126,10 +159,11 @@ int main(void) {
     
     printf("=== Graph DFS Traversals (Adjacency List) ===\n\n");
     
+    printf("test");
     DFS_Recursive(graph, 0);
     // Expected: DFS Recursive (starting from vertex 0): 0 1 3 4 5 6 2
     
-    DFS_Iterative(graph, 0);
+    // DFS_Iterative(graph, 0);
     // Expected: DFS Iterative (starting from vertex 0): 0 2 1 4 6 5 3
     
     printf("\n=== Traversal Complete ===\n");

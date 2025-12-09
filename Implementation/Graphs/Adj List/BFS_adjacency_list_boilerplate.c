@@ -101,22 +101,68 @@ void BFS(Graph *graph, int startVertex) {
     //    - Loop through its adjacency list
     //    - For each unvisited neighbor: mark visited and enqueue
     // 6. Print newline
+
+
+    bool visited[MAX] = {false};
+
+    Queue q;
+    initQueue(&q);
+
+    visited[startVertex] = true;
+    enqueue(&q, startVertex);
+      printf("BFS (starting from vertex %d): ", startVertex);
+    while(!isEmptyQueue(q))
+    {
+        int currVertex = dequeue(&q);
+        printf("%d ", currVertex);
+        
+        EdgeNode* marites;
+
+        for (marites = graph->adjList[currVertex]; marites != NULL; marites = marites->next){
+            if (visited[marites->vertex] == false)
+            {
+                visited[marites->vertex] = true;
+                enqueue(&q, marites->vertex);
+            }   
+    }
+
+}
 }
 
 void BFS_WithLevels(Graph *graph, int startVertex) {
-    // TODO: Implement BFS with level tracking
-    // 1. Initialize visited[] and level[] arrays
-    // 2. Create and init queue
-    // 3. Mark start visited, set level[start] = 0, enqueue start
-    // 4. Print header
-    // 5. While queue not empty:
-    //    - Dequeue vertex
-    //    - Print "Vertex X at level Y"
-    //    - For each unvisited neighbor:
-    //      - Mark visited
-    //      - Set level[neighbor] = level[current] + 1
-    //      - Enqueue neighbor
-    // 6. Print newline
+   
+    int visited[MAX] = {0};
+    int level[MAX] = {0};   
+    Queue q;
+    initQueue(&q);
+    visited[startVertex] = 1;
+    level[startVertex] = 0;
+    
+    enqueue(&q, startVertex);
+    printf("BFS with Levels (starting from vertex %d):\n", startVertex);
+    
+
+    while (!isEmptyQueue(q))
+    {
+        int curr = dequeue(&q);
+        printf("  Vertex %d at level %d\n", curr, level[curr]);
+
+        EdgeNode* trav;
+        trav = graph->adjList[curr];
+
+        while (trav != NULL)
+        {
+            if (!visited[trav->vertex])
+            {
+                visited[trav->vertex] = 0;
+                level[trav->vertex] = level[curr] + 1; // it's basically "next to it an iteration further"
+                enqueue(&q, trav->vertex);
+            }
+
+            trav = trav->next;
+        }
+
+    }
 }
 
 // =========================================================================

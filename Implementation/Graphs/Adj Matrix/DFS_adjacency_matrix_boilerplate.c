@@ -86,24 +86,15 @@ void DFS_Recursive_Helper(Graph *graph, int vertex, bool visited[]) {
 }
 
 void DFS_Recursive(Graph *graph, int startVertex) {
-    // TODO: Implement recursive DFS wrapper
-    // 1. Initialize visited array to false
-    // 2. Print header
-    // 3. Call DFS_Recursive_Helper
-    // 4. Print newline
+   
+
+    
 }
 
 void DFS_Iterative(Graph *graph, int startVertex) {
-    // TODO: Implement iterative DFS using stack
-    // 1. Initialize visited array
-    // 2. Create and init stack
-    // 3. Push start vertex
-    // 4. While stack not empty:
-    //    - Pop vertex
-    //    - If visited, skip
-    //    - Mark visited, print
-    //    - Loop through matrix row, push unvisited neighbors
-    // 5. Print newline
+    
+
+
 }
 
 // =========================================================================

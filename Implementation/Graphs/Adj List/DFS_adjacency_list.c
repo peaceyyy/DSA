@@ -143,24 +143,20 @@ void DFS_Iterative(Graph *graph, int startVertex) {
     
     // Main DFS loop: continues until stack is empty
     while (!isEmptyStack(stack)) {
-        int currentVertex = pop(&stack);     // Pop vertex from stack
-        
-        // If already visited, skip (important for graphs with multiple paths)
-        if (visited[currentVertex]) {
-            continue;
-        }
-        
-        // Mark as visited and process
-        visited[currentVertex] = true;
+        int currentVertex = pop(&stack);     // Pop vertex from stack        
+
+                // Mark as visited and process
         printf("%d ", currentVertex);        // Process/visit the vertex (print it)
         
         // Push all unvisited neighbors onto stack
         // Note: We traverse the adjacency list, and since we're using a stack,
         // the last neighbor pushed will be processed first (LIFO)
         EdgeNode *temp = graph->adjList[currentVertex];
+
         while (temp != NULL) {
             int neighbor = temp->vertex;
             if (!visited[neighbor]) {        // Only push unvisited neighbors
+                visited[neighbor] = true;
                 push(&stack, neighbor);      // Push onto stack for later processing
             }
             temp = temp->next;

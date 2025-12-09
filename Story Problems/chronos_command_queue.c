@@ -21,21 +21,21 @@
 
 // Your task is to describe and then implement the data structure and the necessary functions to satisfy the Chronos Corporation's requirements.
 
-
-
 #include <stdio.h>
 #include <stdlib.h>
 
 #define MAX_CAPACITY 100
 
 // Represents a single command in the queue
-typedef struct {
+typedef struct
+{
     int priority;
     int timestamp;
 } Task;
 
 // The Priority Queue structure, implemented as a max-heap
-typedef struct {
+typedef struct
+{
     Task heap[MAX_CAPACITY];
     int size;
 } PriorityQueue;
@@ -45,16 +45,20 @@ typedef struct {
  * Description: Initializes a new, empty Priority Queue.
  * Returns: A pointer to the new PriorityQueue.
  */
-PriorityQueue* createPriorityQueue() {
-    // Your code here
-    return NULL; // Placeholder
+PriorityQueue *createPriorityQueue()
+{
+
+    PriorityQueue *pq = (PriorityQueue *)malloc(sizeof(PriorityQueue));
+    pq->size = 0;
+    return pq;
 }
 
 /*
  * Function: swap
  * Description: A utility function to swap two Tasks in memory.
  */
-void swap(Task* a, Task* b) {
+void swap(Task *a, Task *b)
+{
     Task temp = *a;
     *a = *b;
     *b = temp;
@@ -66,28 +70,54 @@ void swap(Task* a, Task* b) {
  *              precedence than Task B.
  * Returns: 1 if A is higher, 0 otherwise.
  */
-int hasHigherPrecedence(Task a, Task b) {
-    // Your critical logic here:
-    // 1. Compare priorities.
-    // 2. If priorities are equal, compare timestamps.
-    return 0; // Placeholder
+int hasHigherPrecedence(Task a, Task b)
+{
+    return (a.priority > b.priority) || (a.priority == b.priority && a.timestamp < b.timestamp);
 }
 
 /*
  * Function: heapifyUp
  * Description: After insertion, this function ensures the heap property is
  *              maintained by "bubbling up" the last element.
+ *
+ *
+// The command queue processes tasks based on a priority system. Each task is assigned a **priority level** (an integer) and a **timestamp** of when it was submitted. The rule for processing is simple: **the task with the highest priority is always executed next.**
+
+// However, there's a complication. If multiple tasks share the *exact same highest priority level*, the system must preserve the order of submission. That is, the one that was submitted earliest (oldest timestamp) must be executed first.
+
  */
-void heapifyUp(PriorityQueue* pq, int index) {
-    // Your code here
+void heapifyUp(PriorityQueue *pq, int index)
+{
+
+    int current = index;
+    while (current > 0)
+    {
+        int parent = (current - 1) / 2;
+        if (hasHigherPrecedence(pq->heap[current], pq->heap[parent]))
+        {
+            swap(&pq->heap[current], &pq->heap[parent]);
+            current = parent;
+        } else break;
+    }
 }
 
 /*
  * Function: push
  * Description: Adds a new task to the priority queue.
  */
-void push(PriorityQueue* pq, int priority, int timestamp) {
-    // Your code here
+void push(PriorityQueue *pq, int priority, int timestamp)
+{
+
+    if (pq->size < MAX_CAPACITY)
+    {
+        pq->heap[pq->size].priority = priority;
+        pq->heap[pq->size].timestamp = timestamp;
+        pq->size++;
+
+        heapifyUp(pq, pq->size - 1);
+    }
+    else
+        printf("\nQueue is full\n");
 }
 
 /*
@@ -95,8 +125,29 @@ void push(PriorityQueue* pq, int priority, int timestamp) {
  * Description: After deletion (pop), this function ensures the heap property is
  *              maintained by "sinking down" the root element.
  */
-void heapifyDown(PriorityQueue* pq, int index) {
-    // Your code here
+void heapifyDown(PriorityQueue *pq, int index)
+{
+    int current = index;
+
+    while ((current * 2) + 1 < pq->size)
+    {
+        int largest = current;
+        int LC = (current * 2) + 1;
+        int RC = (current * 2) + 2;
+
+        if (LC < pq->size && hasHigherPrecedence(pq->heap[LC], pq->heap[current]))
+            largest = LC;
+        if (RC < pq->size && hasHigherPrecedence(pq->heap[RC], pq->heap[current]))
+            largest = RC;
+
+        if (largest != current)
+        {
+            swap(&pq->heap[current], &pq->heap[largest]);
+            current = largest;
+        }
+        else
+            break;
+    }
 }
 
 /*
@@ -104,10 +155,15 @@ void heapifyDown(PriorityQueue* pq, int index) {
  * Description: Removes and returns the task with the highest precedence.
  * Returns: The task with the highest precedence.
  */
-Task pop(PriorityQueue* pq) {
-    // Your code here
-    Task emptyTask = {-1, -1}; // Placeholder for error/empty case
-    return emptyTask;
+Task pop(PriorityQueue *pq)
+{
+
+    Task temp = pq->heap[0];
+    pq->heap[0] = pq->heap[--pq->size];
+
+    heapifyDown(pq, 0);
+
+    return temp;
 }
 
 /*
@@ -115,18 +171,18 @@ Task pop(PriorityQueue* pq) {
  * Description: Returns the task with the highest precedence without removing it.
  * Returns: The task with the highest precedence.
  */
-Task peek(PriorityQueue* pq) {
-    // Your code here
-    Task emptyTask = {-1, -1}; // Placeholder for error/empty case
-    return emptyTask;
+Task peek(PriorityQueue *pq)
+{
+    return pq->heap[0];
 }
 
-
-int main() {
+int main()
+{
     printf("Booting Chronos Command System...\n");
-    PriorityQueue* commandQueue = createPriorityQueue();
+    PriorityQueue *commandQueue = createPriorityQueue();
 
-    if (commandQueue == NULL) {
+    if (commandQueue == NULL)
+    {
         printf("Fatal error: Could not allocate memory for the command queue.\n");
         return 1;
     }
@@ -135,35 +191,35 @@ int main() {
 
     // 1. push(10, 1)
     push(commandQueue, 10, 1);
-    printf("Pushed (10, 1). Top is now: (%d, %d)\n", peek(commandQueue).priority, peek(commandQueue).timestamp);
+    printf("Pushed (10, 1). Top is now: (%d, %d)\n", peek(commandQueue).priority, peek(commandQueue).timestamp); // Expected: Pushed (10, 1). Top is now: (10, 1)
 
     // 2. push(20, 2)
     push(commandQueue, 20, 2);
-    printf("Pushed (20, 2). Top is now: (%d, %d)\n", peek(commandQueue).priority, peek(commandQueue).timestamp);
+    printf("Pushed (20, 2). Top is now: (%d, %d)\n", peek(commandQueue).priority, peek(commandQueue).timestamp); // Expected: Pushed (20, 2). Top is now: (20, 2)
 
     // 3. push(15, 3)
     push(commandQueue, 15, 3);
-    printf("Pushed (15, 3). Top is now: (%d, %d)\n", peek(commandQueue).priority, peek(commandQueue).timestamp);
+    printf("Pushed (15, 3). Top is now: (%d, %d)\n", peek(commandQueue).priority, peek(commandQueue).timestamp); // Expected: Pushed (15, 3). Top is now: (20, 2)
 
     // 4. pop() -> should be (20, 2)
     Task popped = pop(commandQueue);
-    printf("Popped (%d, %d). Top is now: (%d, %d)\n", popped.priority, popped.timestamp, peek(commandQueue).priority, peek(commandQueue).timestamp);
+    printf("Popped (%d, %d). Top is now: (%d, %d)\n", popped.priority, popped.timestamp, peek(commandQueue).priority, peek(commandQueue).timestamp); // Expected: Popped (20, 2). Top is now: (15, 3)
 
     // 5. push(25, 4)
     push(commandQueue, 25, 4);
-    printf("Pushed (25, 4). Top is now: (%d, %d)\n", peek(commandQueue).priority, peek(commandQueue).timestamp);
+    printf("Pushed (25, 4). Top is now: (%d, %d)\n", peek(commandQueue).priority, peek(commandQueue).timestamp); // Expected: Pushed (25, 4). Top is now: (25, 4)
 
     // 6. push(15, 5)
     push(commandQueue, 15, 5);
-    printf("Pushed (15, 5). Top is now: (%d, %d)\n", peek(commandQueue).priority, peek(commandQueue).timestamp);
+    printf("Pushed (15, 5). Top is now: (%d, %d)\n", peek(commandQueue).priority, peek(commandQueue).timestamp); // Expected: Pushed (15, 5). Top is now: (25, 4)
 
     // 7. pop() -> should be (25, 4)
     popped = pop(commandQueue);
-    printf("Popped (%d, %d). Top is now: (%d, %d)\n", popped.priority, popped.timestamp, peek(commandQueue).priority, peek(commandQueue).timestamp);
+    printf("Popped (%d, %d). Top is now: (%d, %d)\n", popped.priority, popped.timestamp, peek(commandQueue).priority, peek(commandQueue).timestamp); // Expected: Popped (25, 4). Top is now: (15, 3)
 
     // 8. pop() -> should be (15, 3)
     popped = pop(commandQueue);
-    printf("Popped (%d, %d). Top is now: (%d, %d)\n", popped.priority, popped.timestamp, peek(commandQueue).priority, peek(commandQueue).timestamp);
+    printf("Popped (%d, %d). Top is now: (%d, %d)\n", popped.priority, popped.timestamp, peek(commandQueue).priority, peek(commandQueue).timestamp); // Expected: Popped (15, 3). Top is now: (15, 5)
 
     printf("\n--- Simulation Complete ---\n");
 
