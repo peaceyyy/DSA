@@ -159,11 +159,10 @@ int main(void) {
     
     printf("=== Graph DFS Traversals (Adjacency List) ===\n\n");
     
-    printf("test");
     DFS_Recursive(graph, 0);
     // Expected: DFS Recursive (starting from vertex 0): 0 1 3 4 5 6 2
     
-    // DFS_Iterative(graph, 0);
+    DFS_Iterative(graph, 0);
     // Expected: DFS Iterative (starting from vertex 0): 0 2 1 4 6 5 3
     
     printf("\n=== Traversal Complete ===\n");

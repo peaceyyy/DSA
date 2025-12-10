@@ -179,7 +179,6 @@ int main(void) {
     //     ↓   ↓
     //     2   4 → 5
     //         ↓
-    //         6
     addEdge(graph, 0, 1);
     addEdge(graph, 0, 2);
     addEdge(graph, 1, 3);

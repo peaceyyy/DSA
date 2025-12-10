@@ -77,12 +77,7 @@ void addEdge(Graph *graph, int src, int dest) {
 // =========================================================================
 
 void DFS_Recursive_Helper(Graph *graph, int vertex, bool visited[]) {
-    // TODO: Implement recursive DFS helper
-    // 1. Mark vertex as visited
-    // 2. Print vertex
-    // 3. Loop from 0 to numVertices-1:
-    //    - If adjMatrix[vertex][neighbor] == 1 AND neighbor not visited
-    //    - Recursively call DFS_Recursive_Helper on neighbor
+ 
 }
 
 void DFS_Recursive(Graph *graph, int startVertex) {
@@ -93,6 +88,11 @@ void DFS_Recursive(Graph *graph, int startVertex) {
 
 void DFS_Iterative(Graph *graph, int startVertex) {
     
+    int visited[MAX] = {0};
+
+    visited[startVertex] = 1;
+
+
 
 
 }

@@ -1,2 +1,0 @@
-Adjacency List) ===\n\n");
-    
