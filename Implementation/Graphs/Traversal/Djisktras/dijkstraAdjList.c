@@ -12,24 +12,28 @@ typedef struct cell{
 
 typedef list adj_list[MAX];
 
+int min (int a, int b) 
+{
+	return (a < b) ? a : b;
+}
+
 int** Dijkstra(adj_list L, int start){
 
-   int** shortestDistanceArr = (int **)malloc(MAX * sizeof(int *));
-   
-   int visited[MAX] = {0};
+      int visited[MAX] = {0};
    int minDistance = INT_MAX, minVertex;
 
    // fill distance for immediate neighbors
    node* trav = L[start];
    int count = 0;
 
-   while (trav != NULL)
-   {
-      shortestDistanceArr[count++] = trav->length;
-      trav = trav->link;
-   }
+  int **shortestDistanceArr = malloc(MAX * sizeof(int*));
+	for (int i=0;i<MAX;i++) {
+		shortestDistanceArr[i] = malloc(2 * sizeof(int));
+		shortestDistanceArr[i][0] = INF;   // distance
+		shortestDistanceArr[i][1] = -1;    // parent
+	}
+	shortestDistanceArr[start][0] = 0;
 
-   shortestDistanceArr[start] = 0;
 
    for (int x = 1; x < MAX; x++)
    {
@@ -39,22 +43,32 @@ int** Dijkstra(adj_list L, int start){
 
          while (trav != NULL)
          {
-            if (visited[trav->vertex] != 1 && shortestDistanceArr[< minDistance)
+            if (visited[trav->vertex] != 1 && shortestDistanceArr[i][trav->vertex] < minDistance)
             {
                minDistance = trav->vertex;
-               minVertex = currentVertex;
+               minVertex = currentVertex->length;
             }
          }
-      }
 
 
+		}
 
+		visited[minVertex] = 1;
+		
+		for (int i = 0; i < MAX; i++)
+		{
+			for (node* t = L[i]; t != NULL; t = t->link){
+				int v = t->vertex, w = t->length;
 
+				if (visited[v] != 1 && shortestDistanceArr[minVertex][0] != INF)
+				{
+					int alt  = minDistance + w;
+					if (alt < shortestDistanceArr[v][0]) { shortestDistanceArr[v][0] = alt; shortestDistanceArr[v][1] = w; }
+				}
+			}
 
+		}
    }
-
-   
-
 }
 
 void displayLengthAndPath(int **D, int start){

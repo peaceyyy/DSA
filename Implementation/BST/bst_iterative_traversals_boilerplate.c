@@ -118,7 +118,7 @@ void inorder_iterative(BST root) {
             curr = curr->left;
         }
 
-        curr = stack[--top];
+        curr = stack[--top]; // pop
         printf("%d ", curr->data);
         curr = curr->right;
     }

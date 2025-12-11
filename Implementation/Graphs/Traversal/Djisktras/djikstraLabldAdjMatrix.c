@@ -125,8 +125,7 @@ int *Dijkstra(Graph G, int startV)
     // copy the entire row
     // the startV distance to itself is 0
 
-    for (int i = 0; i < SIZE; i++)
-        shortestDistanceArray[i] = G[startV][i];
+    for (int i = 0; i < SIZE; i++) shortestDistanceArray[i] = G[startV][i];
 
     shortestDistanceArray[startV] = 0;
 
@@ -138,13 +137,7 @@ int *Dijkstra(Graph G, int startV)
         for (int currVertex = 0; currVertex < SIZE; currVertex++)
         {
             if (visitedVertices[currVertex] != 1 && shortestDistanceArray[currVertex] < minDistance)
-            {
-
-
-
-
-
-                
+            {                
                 minDistance = shortestDistanceArray[currVertex];
                 minVertex = currVertex;
             }
@@ -159,8 +152,7 @@ int *Dijkstra(Graph G, int startV)
             {
 
                 shortestDistanceArray[j] = min(shortestDistanceArray[j], shortestDistanceArray[minVertex] + G[minVertex][j]);
-                // visitedVertices[j] = 1;
-            }
+                }
         }
     }
 

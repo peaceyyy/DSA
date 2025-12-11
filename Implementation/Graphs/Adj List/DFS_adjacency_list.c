@@ -156,8 +156,8 @@ void DFS_Iterative(Graph *graph, int startVertex) {
         while (temp != NULL) {
             int neighbor = temp->vertex;
             if (!visited[neighbor]) {        // Only push unvisited neighbors
-                visited[neighbor] = true;
                 push(&stack, neighbor);      // Push onto stack for later processing
+                visited[neighbor] = true;
             }
             temp = temp->next;
         }

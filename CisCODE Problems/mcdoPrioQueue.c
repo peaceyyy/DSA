@@ -249,7 +249,7 @@
                 ORDER receiveOrder2 = dequeueOrder(&ServingQueue);
 
                 printf("\n\n---Serving Finished Orders to Customers---\n");
-                printf("RECEIVED AND SERVED order [%d]...\n", receiveOrder1);
+            printf("RECEIVED AND SERVED order [%d]...\n", receiveOrder1);
                 printf("RECEIVED AND SERVED order [%d]...\n", receiveOrder2);
 
                 printf("\n\n-----SERVING QUEUE (dequeued)-----");

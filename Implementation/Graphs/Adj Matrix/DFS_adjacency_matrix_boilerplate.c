@@ -77,13 +77,28 @@ void addEdge(Graph *graph, int src, int dest) {
 // =========================================================================
 
 void DFS_Recursive_Helper(Graph *graph, int vertex, bool visited[]) {
- 
+    
+    visited[vertex] = true;
+
+    printf("%d ", vertex);
+
+    for (int i = 0; i < graph->numVertices; i++)
+    {
+           if (graph->adjMatrix[vertex][i] == 1 && visited[i] != 1)
+            {
+                DFS_Recursive_Helper(graph, i, visited);
+            }   
+    }
+
+
 }
 
 void DFS_Recursive(Graph *graph, int startVertex) {
    
-
-    
+    bool visited[MAX] = {false};
+    printf("DFS Recursive (starting from vertex %d): ", startVertex);
+    DFS_Recursive_Helper(graph, startVertex, visited);
+    printf("\n");
 }
 
 void DFS_Iterative(Graph *graph, int startVertex) {
@@ -92,7 +107,26 @@ void DFS_Iterative(Graph *graph, int startVertex) {
 
     visited[startVertex] = 1;
 
+    Stack s;
+    initStack(&s);
+    push(&s, startVertex);
 
+    visited[startVertex] = 1;
+
+    while(!isEmptyStack(s))
+    {
+        int currVertex = pop(&s);
+        printf("%d ", currVertex);
+
+        for (int i = 0; i < graph->numVertices; i++)
+        {
+            if (graph->adjMatrix[currVertex][i] == 1 && visited[i] != 1)
+            {
+                push(&s, i);
+                visited[i] = 0;
+            }
+        }
+    }
 
 
 }
